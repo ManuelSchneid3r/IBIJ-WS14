@@ -1,0 +1,229 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel} % neue deutsche Rechtschreibung 
+\usepackage{babelbib}       % deutsches Literaturverzeichnis
+\usepackage{verbatim}
+
+% Background
+\usepackage{tikz}
+\usetikzlibrary{fadings}
+\setbeamertemplate{background}{
+\begin{tikzpicture}
+\path (0,0) rectangle (\paperwidth,\paperheight);
+\node[scope fading=west,inner sep=0pt,outer sep=0pt,anchor=north east] at(\paperwidth*1.3,\paperheight*0.83) {\includegraphics[height=\paperheight]{pics/uni}};
+\end{tikzpicture}
+}
+
+% \usepackage{moreverb}
+% \usepackage{array}
+% \usepackage{subfigure}
+% \usepackage{graphicx}
+%\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{amssymb}
+%\usepackage{cite}
+%\usepackage{url}
+
+%===============================================================================
+%///////////////////////////////////////////////////////////////////////////////
+%vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+\usetheme{Rochester}
+\usecolortheme{seagull}
+% Remove navigation
+\beamertemplatenavigationsymbolsempty
+% \setcounter{tocdepth}{2}
+% \usecaptiontemplate{
+% \scriptsize
+% %\structure{\insertcaptionname:}
+% \insertcaption
+% }
+% \setcounter{tocdepth}{2}
+
+% Use bullet as item for lists
+\setbeamertemplate{itemize items}{$\bullet$}
+
+% %\setbeamertemplate{itemize subitem}{{\tiny $\spadesuit$}}
+% %\setbeamertemplate{itemize subsubitem}{{\tiny $\heartsuit$}}
+% \setbeamertemplate{footline}[frame number]
+% \setbeamertemplate{sections/subsections in toc}[circle]{}
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+%///////////////////////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
+\begin{document}%///////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
+%===============================================================================
+\title{Per-Circuit TCP-over-IPsec Transport\\for Anonymous Communication Overlay Networks}   
+\author{Manuel Schneider}
+\institute{Albert Ludwigs Universität - Institut für Informatik} 
+\date{\today} 
+%------------------------------------------------------------------------------
+
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+\begin{frame}{Motivation}
+\end{frame}
+
+%===============================================================================
+%///////////////////////////////////////////////////////////////////////////////
+\section{Grundlagen}
+%///////////////////////////////////////////////////////////////////////////////
+%===============================================================================
+
+\begin{frame}{Übersicht}
+\tableofcontents[sectionstyle=show/shaded, subsectionstyle=show/hide/hide]
+\end{frame}
+
+%------------------------------------------------------------------------------
+\subsection{Tor}
+
+\begin{frame}{\subsecname}{\secname}
+Basics zu Tor (Ausmaß in der Präsentation abhäangig von Dirk).
+Reduziert sich minimal auf die Performancemängel und die Transportlayergeschich-
+te, die für diese Arbeit besonders von Belang ist.
+Themen:
+\end{frame}
+
+%------------------------------------------------------------------------------
+\subsection{IPSec}
+\begin{frame}{\subsecname}{\secname}
+- Ipsec generell (Was warum wie wo)\\
+\end{frame}
+
+\begin{frame}{Subprotokolle}{\secname/\subsecname}
+- Authentication Header (AH)\\
+- Encapsulating Security Payload (ESP)\\
+\end{frame}
+
+\begin{frame}{Operationmodi}{\secname/\subsecname}
+- transport mode\\
+- tunnel mode\\
+\end{frame}
+
+%===============================================================================
+%///////////////////////////////////////////////////////////////////////////////
+\section{Verwandte Arbeiten}
+%///////////////////////////////////////////////////////////////////////////////
+%===============================================================================
+
+\begin{frame}{Übersicht}
+\tableofcontents[sectionstyle=show/shaded, subsectionstyle=show/hide/hide]
+\end{frame}
+
+\begin{frame}{TCP-over-DTLS}{\secname}
+-Einleitung in TCP-over-DTLS\\
+-Wo wird es verwendet0\\
+
+\end{frame}
+
+\begin{frame}{TCP-over-DTLS}{\secname}
+-Funktionsweise
+
+\end{frame}
+
+\begin{frame}{Probleme beim TCP-over-DTLS}{\secname}
+-Aufzeigen der Probleme und der Punkte an denen die Verbesserungen ansetzen.\\
+-Einleitung in das PCTCP
+\end{frame}
+
+%===============================================================================
+%///////////////////////////////////////////////////////////////////////////////
+\section{PCTCP}
+%///////////////////////////////////////////////////////////////////////////////
+%===============================================================================
+
+\begin{frame}{Übersicht}
+\tableofcontents[sectionstyle=show/shaded, subsectionstyle=show/hide/hide]
+\end{frame}
+
+\begin{frame}{\secname}{\subsecname}
+-Einleitung in PCTCP. Wo wird es eingesetzt? Anlehnung an DTLS
+\end{frame}
+
+%------------------------------------------------------------------------------
+\subsection{Kernel-mode per-circuit TCP}
+
+\begin{frame}{Konzept}{\secname/\subsecname}
+- Konzept der Verbindung innerhalb des netzwerks\\
+- Schön mit Illustration
+\end{frame}
+
+\begin{frame}{Notwendige Änderungen}{\secname/\subsecname}
+- Änderung am Verbinungsaufbau\\
+\end{frame}
+
+\begin{frame}{Deployment}{\secname/\subsecname}
+- Vorteile des Deployments (Funktion des heterogenen Netzwerks (Plain tor + PCTCP)\\
+\end{frame}
+
+\begin{frame}{Probleme}{\secname/\subsecname}
+- Resultierende Probleme\\
+\end{frame}
+
+%------------------------------------------------------------------------------
+\subsection{IPSec in PCTCP}
+
+\begin{frame}{}{\secname/\subsecname}
+- Lösung der Probleme mit IPSec\\
+\end{frame}
+
+\begin{frame}{}{\secname/\subsecname}
+- Alternative Lösungen
+\end{frame}
+
+%===============================================================================
+%///////////////////////////////////////////////////////////////////////////////
+\section{Evaluation}
+%///////////////////////////////////////////////////////////////////////////////
+%===============================================================================
+
+\begin{frame}{Übersicht}
+\tableofcontents[sectionstyle=show/shaded, subsectionstyle=show/hide/hide]
+\end{frame}
+
+%------------------------------------------------------------------------------
+\begin{frame}{\secname}{\subsecname}
+\end{frame}
+
+
+
+%===============================================================================
+%///////////////////////////////////////////////////////////////////////////////
+%===============================================================================
+
+\begin{frame}[plain]{Übersicht}
+	\tableofcontents[sectionstyle=show/show, subsectionstyle=show/hide/hide]
+\begin{center}
+Vielen Dank für die Aufmerksamkeit!
+\end{center}
+\end{frame}
+
+%===============================================================================
+%///////////////////////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
+%===============================================================================
+
+
+{\tiny
+\bibliographystyle{plain}
+\bibliography{bibliography}
+}
+
+%===============================================================================
+%///////////////////////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
+\end{document}%/////////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
+%==============================================/=================================
+
