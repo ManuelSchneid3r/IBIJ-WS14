@@ -1,0 +1,195 @@
+\documentclass[fleqn,envcountsame,runningheads,10pt,a4paper]{llncs}
+
+\usepackage[latin1]{inputenc}
+\usepackage{enumerate} 
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{ngerman}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{a4paper,left=30mm,right=30mm,top=35mm,bottom=25mm}
+
+\setlength\parindent{0pt}%Festlegen des Absatzeinzuges
+\setlength\mathindent{0pt}%Festlegen des Einzuges für abgesetzte Formeln
+
+\pagestyle{headings}
+
+\begin{document}
+%==============================================================================
+\title{Per-Circuit TCP-over-IPsec Transport for Anonymous Communication Overlay Networks} 
+\titlerunning{}
+\author{Manuel Schneider\\ms476@pluto.uni-freiburg.de}
+\authorrunning{}
+\institute{Seminar am Lehrstuhl für Kommunikationssysteme \\ Albert-Ludwigs-Universität Freiburg}
+\maketitle
+%==============================================================================
+\begin{abstract}
+Das Ziel bei der Durchführung des Praxis-Proseminars ist, dass sich die Teilnehmer mit (erweiterten) Fragestellungen im Bereich Kommunikationssysteme beschäftigen. Der Fokus liegt auf einem praktischen Zugang zur Thematik.
+\end{abstract}
+%==============================================================================
+\section{Motivation}
+Eventuell grobe Basics zu Tor was es ist, wozu man es braucht.\\
+Performancemeasurement\\
+Problemeingrenzung\\
+Was kann dagegen gemacht werden, was wird gemacht? (Name ?TCP-over-DTLS? fällt)\\
+Was ist das Ziel dieser Publikation vom PCTCP? \\
+%==============================================================================
+\section{Grundlagen}
+%==============================================================================
+\subsection{TOR}
+Basics zu Tor (Ausmaß in der Präsentation abhängig von Dirk).\\
+Reduziert sich minimal auf die Performancemängel und die Transportlayergeschichte, die für diese Arbeit besonders von Belang ist. \\
+Themen:\\
+- Cirtcuit construction\\
+- Diffie Hellman\\
+- SOCKS Proxy\\
+- Source Routing\\
+- Cross Circuit Interference Problem (Unfair TCP Congestion Control)\\
+%==============================================================================
+\subsection{IPSEC}
+Basics zu IPSec\\
+Erklärungen zu den Subprotokollen:\\
+- Authentication Header (AH)\\
+- Encapsulating Security Payload (ESP)\\
+Erklärungen zu Operationmodes:\\
+- transport mode\\
+- tunnel mode\\
+%==============================================================================
+\section{Verwandte Arbeiten}
+
+-Einleitung in TCP-over-DTLS, der Ansatz den die Autoren versuchen zu verbessern. \\
+-Aufzeigen der Probleme und der Punkte an denen die Verbesserungen ansetzen.\\
+
+%==============================================================================
+\section{PCTCP}
+
+
+\subsection{Kernel-mode per-circuit TCP}
+
+- Konzept der Verbindung innerhalb des netzwerks\\
+- Illustrationen\\
+- Vorteile des Deployments (Funktion des heterogenen Netzwerks (Plain tor + PCTCP)\\
+- Änderung am Verbinungsaufbau\\
+- Resultierende Probleme\\
+
+\subsection{IPSec in PCTCP}
+
+- Lösung der Probleme mit IPSec\\
+- Alternative Lösungen
+%==============================================================================
+\section{Evaluation}
+%==============================================================================
+\section{Fazit}
+%==============================================================================
+
+%==============================================================================
+%==============================================================================
+%==============================================================================
+%==============================================================================
+%==============================================================================
+%==============================================================================
+%==============================================================================
+%==============================================================================
+\section{Einleitung}
+
+Im Rahmen des Proseminars\footnote{IP-(Un)Sicherheit (Blockseminar), \url{http://www.ks.uni-freiburg.de/php_veranstaltungsdetail.php?id=56} [Online; letzter Aufruf 03.11.2011]} sind folgende Leistungen zu erbringen:
+\begin{enumerate}
+
+\item Die Einarbeitung in ein bestimmtes Thema und praktische Durchringung.
+\item Erstellung einer Ausarbeitung ca. 5-8 Seiten netto, die als Vorbereitungsgrundlage für die anderen Teilnehmer dient und bis Ende Januar vorliegen muss (siehe Abschnitt \ref{sec:deadline}).
+\item Halten eines Seminarvortrags zur Einführung in das Thema von ca. 15 Minuten.
+\item Entwickeln, stellen und betreuen von Übungsaufgaben für ca. 45 Minuten praktische Zeit am Rechner.
+\item Anwesenheit bei Vorträgen anderer Teilnehmer und aktive Mitwirkung an den Übungsaufgaben (siehe Abschnitt \ref{sec:ortzeit}).
+\end{enumerate}
+
+%\noindent Der Rest dieses Dokuments ist folgendermaßen gegliedert. In Abschnitt~\ref{sec:ortzeit} werden Angaben zu Ort und Zeit des Seminars gemacht. In Abschnitt \ref{sec:deadline} werden die zeitlichen Vorgaben konkretisiert. In den Abschnitten \ref{sec:zusam} und \ref{sec:folien} werden die Anforderungen an die Zusammenfassung sowie Folien dargelegt.
+
+
+\section{Ort und Zeit}
+\label{sec:ortzeit}
+
+\begin{itemize}
+\item Die Vorbesprechung war am 02.11.2011 um 17.30 Uhr s.t. im Rechenzentrum (Raum -114).
+\item Das Blockseminar (Präsenzphase) ist am 20.02 - 21.02.2012 von 14.30 s.t. - 18 Uhr (im Rechenzentrum, Raum -100).
+\end{itemize}
+
+\section{Zeitlicher Ablauf}
+\label{sec:deadline}
+Die \textbf{vorläufige Version} der Ausarbeitung ist bis zum \textbf{23. Januar 2012 um 23.59 Uhr} an \\dennis.wehrle@rz.uni-freiburg.de zu senden. Der Empfang der Email wird innerhalb von 2 Werktagen per Email quittiert. Sollte dies unterbleiben, ist dringend Kontakt mit dem Betreuer aufzunehmen!
+
+Die \textbf{vorläufige Version der Folien und Übungsaufgaben} ist bis zum \textbf{30. Januar 2012 um 23.59 Uhr} per Email an dennis.wehrle@rz.uni-freiburg.de einzureichen.
+
+Zur Ausarbeitung, Folien und Übungsaufgaben erhalten die Teilnehmer/innen Feedback im Rahmen eines persönlichen Termins, der nach der Abgabe per Email auszumachen ist.
+
+Die \textbf{endgültige Version} der Ausarbeitung, Folien und Übungsaufgaben ist am \textbf{13. Februar 2012 um 23.59 Uhr} per Email an dennis.wehrle@rz.uni-freiburg.de einzureichen. Sie wird ebenfalls innerhalb von zwei Werktagen quittiert. \textbf{Sollten die Dokumente nicht rechtzeitig eingereicht werden, wird das gesamte Proseminar als nicht bestanden gewertet!}
+
+
+\section{Schriftliche Zusammenfassung}
+\label{sec:zusam}
+
+Die schriftliche Zusammenfassung soll sich im Aufbau an die Struktur eines kurzen wissenschaftlichen Beitrags (Konferenz-Paper) orientieren. Sie beginnt mit einem Titel, dem Namen des Verfassers sowie einer Zusammenfassung, welche die zentralen Ergebnisse des dargestellten Artikels prägnant darstellt. Der erste Abschnitt ist eine Einleitung, welche das Thema des Artikels motivieren und das Interesse des Lesers für das kommende Material wecken soll.
+
+Der Haupttext ist im Regelfall in weitere nummerierte Abschnitte zu unterteilen. Es besteht eine harte 8-Seitenbegrenzung (siehe unten).
+
+Der Text muss mit einer Schlussbemerkungen enden, welche ebenfalls kurz (1--2 Absätze) die Beiträge des Artikels rekapituliert und bei Bedarf einen Ausblick gibt. Nachfolgend wird die Literaturliste platziert.
+
+Es ist \LaTeX{} und der LNCS-Stil (\texttt{llncs}) zu verwenden. Für die Literaturliste ist der Springer-Bibliographiestil \texttt{splncs} zu verwenden. Dieses Dokument stellt ein Beispiel für die Verwendung des LNCS-Stils sowie des Springer-Bibliographiestils dar. Die 8-Seitenbegrenzung gilt für das komplette Dokument inklusive des Titels und der Literaturliste. Es sind keine weiteren Elemente (Inhalts- und Abbildungsverzeichnisse, Danksagungen etc.) zu verwenden. Eine Übersicht der Literaturfelder für das BibTeX kann der Wikipediaseite entnommen werden \cite{bibtex-wiki}.
+
+\textbf{Die endgültige Ausarbeitung ist im PDF-Format abzugeben. Ebenfalls sollen alle Sourcen (.tex, Bilder, Bibliographie, etc) in einer kompilierbaren Form als Archiv (.zip, .tar.gz) abgegeben werden. Die 8-Sei\-ten\-be\-gren\-zung ist unbedingt einzuhalten! Überschreitungen der Seitenbegrenzung führen zum Nichtbestehen des Proseminars. Modifikationen am LNCS-Stil sind nicht erlaubt.}
+
+
+\section{Folien}
+\label{sec:folien}
+
+Die Folien sind Begleitmaterial für den Vortrag und sollen nicht zwingend zum selbständigen Studium geeignet sein. Die Folien müssen ebenfalls auf Deutsch im PDF-Format eingereicht werden. Während ästhetische Aspekte nicht im Vordergrund stehen, sollten die Folien zumindest so kontrastreich sein, dass eine problemfreie visuelle Rezeption auch bei schwierigen Lichtverhältnissen gewährleistet ist.
+
+Der Vortrag sollte mit einer kurzen (1 -- 2 Folien) Motivation des angegangenen Problems beginnen. Danach sollte eine Gliederungsfolie kommen, die je nach Vortragsstil später wiederholt gezeigt werden kann. Navigationselemente, wie sie etwa von Latex-Beamer-Style erzeugt werden, sollten nur eingesetzt werden, wenn eine sinnvolle Verwendung für sie besteht (z.B.~häufiges Springen zu vorherigen Folien).
+
+Die Hauptaufgabe des Vortrags besteht darin, den Zuhörer/innen das Gefühl für das Thema, die Fragestellungen, das Erreichte und die offenen Fragen zu vermitteln. Formale Herleitungen sind spärlich einzusetzen und nach Möglichkeit zu visualisieren (ohne dabei jedoch die Korrektheit des geschriebenen zu opfern). Längere Sätze (über 2 Zeilen) sollten nach Möglichkeit vermieden werden. Idealerweise sollten bei Aufzählungen kurze, prägnante unvollständige Sätze zum Einsatz kommen. Der Vortrag soll nicht darin bestehen, den Inhalt der Folien vorzulesen!
+
+Am Ende der Präsentation sollte die Zusammenfassung des Vortrags (1 -- 2 Folien) gegeben werden. Eine Schlussfolie (\glqq Noch Fragen?\grqq, \glqq That's all folks!\grqq, Bilder von Haustieren und ähnliches) stellt erfahrungsgemäß eine schlechtere Diskussionsgrundlage als eine Zusammenfassungsfolie dar.
+
+\section{Übung}
+\label{sec:uebung}
+
+Der Fokus dieses Proseminars liegt auf der praktischen Übung, die im Anschluss an den jeweiligen Vortrag stattfindet.
+
+Die geforderten Übungsaufgaben dienen dazu den theoretischen Teil (Vortrag) zu veranschaulichen. Sie sollten mit einfachen Aufgabenstellungen anfangen, die eine Vertrautheit mit den eingesetzten Tools, der Fragestellung etc. herstellen. Im nächsten Schritt sollten dann die Steigerungen und komplexeren Anforderungen folgen, wobei sinnvollerweise das vorher Angewendete von Nutzen ist. Unter Umständen macht es Sinn, die Aufgaben auch von jemandem Dritten vorher ausprobieren zu lassen. \textbf{Ebenso sollten die Aufgaben vorher mit den betreuenden Assistenten abgesprochen werden.}
+
+Sicherlich lässt sich nicht immer die komplette Breite des Themas durch Übungsaufgaben abdecken. In diesem Fall kann ein Teil auch als Demo erfolgen, wobei eine Einbeziehung der Beteiligten immer wünschenswert ist. 
+Die Übung soll in einer vorbereiteten virtuellen Maschine erfolgen. Das Image befindet sich in Vorbereitung und wird in den nächsten Tagen bereitgestellt.
+
+Das Übungsblatt muss ebenfalls mit dieser Vorlage erstellt werden. Eine Zusammenfassung oder ein Literaturverzeichnis wird hierbei allerdings nicht benötigt. Falls notwendig wird eine Toolbeschreibung am Ende des Übungsblatts angehängt. Hierzu kann das auskommentierte Beispiel als Vorlage verwendet werden.\newline
+\textbf{Die Abgabe des endgültigen Übungsblatts erfolgt ebenfalls im PDF-Format sowie mit allen notwendigen Sourcen (.tex, Bilder, etc.).}
+\newline
+%\newline
+%\textbf{Nützliche Programme}
+%Genauere Informationen zu sämtlichen Befehlen und Programmen erhalten Sie mit dem Befehl: \textit{man} Programmname (Beispiel: \textit{man ping})
+%\begin{itemize}
+%\item \textbf{Tool 1}\newline
+%Hier eine Hilfestellung für das Tool 1.
+%\item \textbf{Tool 2}\newline
+%Hier die Hilfestellung für das Tool 2.
+%\end{itemize}
+%==============================================================================
+%==============================================================================
+%==============================================================================
+%==============================================================================
+%==============================================================================
+%==============================================================================
+%==============================================================================
+\nocite{rfc:socks}
+\nocite{rfc:ipsec}
+\nocite{rfc:tls}
+\nocite{tor}
+\nocite{pctcp}
+\nocite{tcp-over-dtls}
+\bibliographystyle{splncs}
+\bibliography{literatur}
+%==============================================================================
+\end{document}
