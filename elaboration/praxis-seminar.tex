@@ -1,6 +1,5 @@
 \documentclass[fleqn,envcountsame,runningheads,10pt,a4paper]{llncs}
-
-\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage{enumerate} 
 \usepackage{verbatim}
 \usepackage{graphicx}
@@ -15,7 +14,7 @@
 \geometry{a4paper,left=30mm,right=30mm,top=35mm,bottom=25mm}
 
 \setlength\parindent{0pt}%Festlegen des Absatzeinzuges
-\setlength\mathindent{0pt}%Festlegen des Einzuges für abgesetzte Formeln
+\setlength\mathindent{0pt}%Festlegen des Einzuges fÃ¼r abgesetzte Formeln
 
 \pagestyle{headings}
 
@@ -25,22 +24,27 @@
 \titlerunning{}
 \author{Manuel Schneider\\ms476@pluto.uni-freiburg.de}
 \authorrunning{}
-\institute{Seminar am Lehrstuhl für Kommunikationssysteme \\ Albert-Ludwigs-Universität Freiburg}
+\institute{Seminar am Lehrstuhl fÃ¼r Kommunikationssysteme \\ Albert-Ludwigs-UniversitÃ¤t Freiburg}
 \maketitle
 %==============================================================================
-\begin{abstract}
-Das Ziel bei der Durchführung des Praxis-Proseminars ist, dass sich die Teilnehmer mit (erweiterten) Fragestellungen im Bereich Kommunikationssysteme beschäftigen. Der Fokus liegt auf einem praktischen Zugang zur Thematik.
-\end{abstract}
+%\begin{abstract}
+%Das Ziel bei der DurchfÃ¼hrung des Praxis-Proseminars ist, dass sich die Teilnehmer mit (erweiterten) %Fragestellungen im Bereich Kommunikationssysteme beschÃ¤ftigen. Der Fokus liegt auf einem %praktischen Zugang zur Thematik.
+%\end{abstract}
 
 %==============================================================================
 \section{Einleitung}
 \label{sec:intro}
 
-Eventuell grobe Basics zu Tor was es ist, wozu man es braucht.\\
-Performancemeasurement\\
-Problemeingrenzung\\
-Was kann dagegen gemacht werden, was wird gemacht? (Name ?TCP-over-DTLS? fällt)\\
-Was ist das Ziel dieser Publikation vom PCTCP? \\
+Problem AnonymitÃ¤t in Internet\\
+LÃ¶sung: Anonymsierungsnetzwerke\\
+Beispiel Tor\\
+Nachteile Tor (Peformance)\\
+Scherpunkt, Thema dieser Ausarbeitung\\
+Problemeingrenzung (Durchsatz, Latency, woher kommts? Refernez auf sec:tor ) \\
+Einleitung der behadelten LÃ¶sungsansÃ¤tze (TCPoDTLS, PCTCP)\\
+Was ist das Ziel vom PCTCP? \\
+
+
 
 %==============================================================================
 \section{Grundlagen}
@@ -50,13 +54,36 @@ Was ist das Ziel dieser Publikation vom PCTCP? \\
 \subsection{TOR}
 \label{sec:tor}
 
-Basics zu Tor (Ausmaß in der Präsentation abhängig von Dirk).\\
-Reduziert sich minimal auf die Performancemängel und die Transportlayergeschichte, die für diese Arbeit besonders von Belang ist. \\
-Themen:\\
+Tor ist ein Netzwerk zur Anonymisierung der Verbingungsdaten. Es ist weit verbreitet und wird stÃ¤ndig weiter entwickelt. Das Netzwerk umfasst mittlerweile ca 6500 Knoten und eine kumulierte Bandbreite von ca 6\,GBps\footnote{\url{http://torstatus.blutmagie.de/\#Stats}, Abgerufen am 18.12.2014}.
+
+In einer groben Zusammenfassung Ã¼ber die Funktionsweise von Tor, kann man sagen, dass der 
+
+\subsubsection{Ziele des Tor Netzwerks}
+\label{sec:goals}
+
+\subsubsection{Das Bedrohungs Modell}
+\label{sec:threatmodel}
+
+\subsubsection{Das Design des Tor Netzwerks}
+\label{sec:tordesign}
+
+
+- Source Routing\\
+
+\subsubsection{Kommunikation - Cells, Circuits und Streams}
+\label{sec:communication}
+
+\subsubsection{Bandbreitenlimitierung und Staukontrolle}
+\label{sec:communication}
+
+\paragraph{Cross Circuit Interference Problem}
+\label{sec:crosscircuitinterference}
+
+
+
 - Cirtcuit construction\\
 - Diffie Hellman\\
 - SOCKS Proxy\\
-- Source Routing\\
 - Cross Circuit Interference Problem (Unfair TCP Congestion Control)\\
 
 %------------------------------------------------------------------------------
@@ -64,10 +91,10 @@ Themen:\\
 \label{sec:ipsec}
 
 Basics zu IPSec\\
-Erklärungen zu den Subprotokollen:\\
+ErklÃ¤rungen zu den Subprotokollen:\\
 - Authentication Header (AH)\\
 - Encapsulating Security Payload (ESP)\\
-Erklärungen zu Operationmodes:\\
+ErklÃ¤rungen zu Operationmodes:\\
 - transport mode\\
 - tunnel mode\\
 
@@ -91,15 +118,15 @@ Erklärungen zu Operationmodes:\\
 - Konzept der Verbindung innerhalb des netzwerks\\
 - Illustrationen\\
 - Vorteile des Deployments (Funktion des heterogenen Netzwerks (Plain tor + PCTCP)\\
-- Änderung am Verbinungsaufbau\\
+- Ã¤nderung am Verbinungsaufbau\\
 - Resultierende Probleme\\
 
 %------------------------------------------------------------------------------
 \subsection{IPSec in PCTCP}
 \label{sec:ipsecinpctcp}
 
-- Lösung der Probleme mit IPSec\\
-- Alternative Lösungen
+- LÃ¤sung der Probleme mit IPSec\\
+- Alternative LÃ¤sungen
 
 %==============================================================================
 \section{Evaluation}
@@ -117,27 +144,27 @@ Erklärungen zu Operationmodes:\\
 \section{Schriftliche Zusammenfassung}
 \label{sec:zusam}
 
-Die schriftliche Zusammenfassung soll sich im Aufbau an die Struktur eines kurzen wissenschaftlichen Beitrags (Konferenz-Paper) orientieren. Sie beginnt mit einem Titel, dem Namen des Verfassers sowie einer Zusammenfassung, welche die zentralen Ergebnisse des dargestellten Artikels prägnant darstellt. Der erste Abschnitt ist eine Einleitung, welche das Thema des Artikels motivieren und das Interesse des Lesers für das kommende Material wecken soll.
+Die schriftliche Zusammenfassung soll sich im Aufbau an die Struktur eines kurzen wissenschaftlichen Beitrags (Konferenz-Paper) orientieren. Sie beginnt mit einem Titel, dem Namen des Verfassers sowie einer Zusammenfassung, welche die zentralen Ergebnisse des dargestellten Artikels prÃ¤gnant darstellt. Der erste Abschnitt ist eine Einleitung, welche das Thema des Artikels motivieren und das Interesse des Lesers fÃ¤r das kommende Material wecken soll.
 
 Der Haupttext ist im Regelfall in weitere nummerierte Abschnitte zu unterteilen. Es besteht eine harte 8-Seitenbegrenzung (siehe unten).
 
-Der Text muss mit einer Schlussbemerkungen enden, welche ebenfalls kurz (1--2 Absätze) die Beiträge des Artikels rekapituliert und bei Bedarf einen Ausblick gibt. Nachfolgend wird die Literaturliste platziert.
+Der Text muss mit einer Schlussbemerkungen enden, welche ebenfalls kurz (1--2 AbsÃ¤tze) die BeitrÃ¤ge des Artikels rekapituliert und bei Bedarf einen Ausblick gibt. Nachfolgend wird die Literaturliste platziert.
 
-Es ist \LaTeX{} und der LNCS-Stil (\texttt{llncs}) zu verwenden. Für die Literaturliste ist der Springer-Bibliographiestil \texttt{splncs} zu verwenden. Dieses Dokument stellt ein Beispiel für die Verwendung des LNCS-Stils sowie des Springer-Bibliographiestils dar. Die 8-Seitenbegrenzung gilt für das komplette Dokument inklusive des Titels und der Literaturliste. Es sind keine weiteren Elemente (Inhalts- und Abbildungsverzeichnisse, Danksagungen etc.) zu verwenden. Eine Übersicht der Literaturfelder für das BibTeX kann der Wikipediaseite entnommen werden \cite{bibtex-wiki}.
+Es ist \LaTeX{} und der LNCS-Stil (\texttt{llncs}) zu verwenden. FÃ¤r die Literaturliste ist der Springer-Bibliographiestil \texttt{splncs} zu verwenden. Dieses Dokument stellt ein Beispiel fÃ¤r die Verwendung des LNCS-Stils sowie des Springer-Bibliographiestils dar. Die 8-Seitenbegrenzung gilt fÃ¤r das komplette Dokument inklusive des Titels und der Literaturliste. Es sind keine weiteren Elemente (Inhalts- und Abbildungsverzeichnisse, Danksagungen etc.) zu verwenden. Eine Ã¤bersicht der Literaturfelder fÃ¤r das BibTeX kann der Wikipediaseite entnommen werden \cite{bibtex-wiki}.
 
-\textbf{Die endgültige Ausarbeitung ist im PDF-Format abzugeben. Ebenfalls sollen alle Sourcen (.tex, Bilder, Bibliographie, etc) in einer kompilierbaren Form als Archiv (.zip, .tar.gz) abgegeben werden. Die 8-Sei\-ten\-be\-gren\-zung ist unbedingt einzuhalten! Überschreitungen der Seitenbegrenzung führen zum Nichtbestehen des Proseminars. Modifikationen am LNCS-Stil sind nicht erlaubt.}
+\textbf{Die endgÃ¤ltige Ausarbeitung ist im PDF-Format abzugeben. Ebenfalls sollen alle Sourcen (.tex, Bilder, Bibliographie, etc) in einer kompilierbaren Form als Archiv (.zip, .tar.gz) abgegeben werden. Die 8-Sei\-ten\-be\-gren\-zung ist unbedingt einzuhalten! Ã¤berschreitungen der Seitenbegrenzung fÃ¤hren zum Nichtbestehen des Proseminars. Modifikationen am LNCS-Stil sind nicht erlaubt.}
 
 %==============================================================================
 \section{Folien}
 \label{sec:folien}
 
-Die Folien sind Begleitmaterial für den Vortrag und sollen nicht zwingend zum selbständigen Studium geeignet sein. Die Folien müssen ebenfalls auf Deutsch im PDF-Format eingereicht werden. Während ästhetische Aspekte nicht im Vordergrund stehen, sollten die Folien zumindest so kontrastreich sein, dass eine problemfreie visuelle Rezeption auch bei schwierigen Lichtverhältnissen gewährleistet ist.
+Die Folien sind Begleitmaterial fÃ¤r den Vortrag und sollen nicht zwingend zum selbstÃ¤ndigen Studium geeignet sein. Die Folien mÃ¤ssen ebenfalls auf Deutsch im PDF-Format eingereicht werden. WÃ¤hrend Ã¤sthetische Aspekte nicht im Vordergrund stehen, sollten die Folien zumindest so kontrastreich sein, dass eine problemfreie visuelle Rezeption auch bei schwierigen LichtverhÃ¤ltnissen gewÃ¤hrleistet ist.
 
-Der Vortrag sollte mit einer kurzen (1 -- 2 Folien) Motivation des angegangenen Problems beginnen. Danach sollte eine Gliederungsfolie kommen, die je nach Vortragsstil später wiederholt gezeigt werden kann. Navigationselemente, wie sie etwa von Latex-Beamer-Style erzeugt werden, sollten nur eingesetzt werden, wenn eine sinnvolle Verwendung für sie besteht (z.B.~häufiges Springen zu vorherigen Folien).
+Der Vortrag sollte mit einer kurzen (1 -- 2 Folien) Motivation des angegangenen Problems beginnen. Danach sollte eine Gliederungsfolie kommen, die je nach Vortragsstil spÃ¤ter wiederholt gezeigt werden kann. Navigationselemente, wie sie etwa von Latex-Beamer-Style erzeugt werden, sollten nur eingesetzt werden, wenn eine sinnvolle Verwendung fÃ¤r sie besteht (z.B.~hÃ¤ufiges Springen zu vorherigen Folien).
 
-Die Hauptaufgabe des Vortrags besteht darin, den Zuhörer/innen das Gefühl für das Thema, die Fragestellungen, das Erreichte und die offenen Fragen zu vermitteln. Formale Herleitungen sind spärlich einzusetzen und nach Möglichkeit zu visualisieren (ohne dabei jedoch die Korrektheit des geschriebenen zu opfern). Längere Sätze (über 2 Zeilen) sollten nach Möglichkeit vermieden werden. Idealerweise sollten bei Aufzählungen kurze, prägnante unvollständige Sätze zum Einsatz kommen. Der Vortrag soll nicht darin bestehen, den Inhalt der Folien vorzulesen!
+Die Hauptaufgabe des Vortrags besteht darin, den ZuhÃ¤rer/innen das GefÃ¤hl fÃ¤r das Thema, die Fragestellungen, das Erreichte und die offenen Fragen zu vermitteln. Formale Herleitungen sind spÃ¤rlich einzusetzen und nach MÃ¤glichkeit zu visualisieren (ohne dabei jedoch die Korrektheit des geschriebenen zu opfern). LÃ¤ngere SÃ¤tze (Ã¤ber 2 Zeilen) sollten nach MÃ¤glichkeit vermieden werden. Idealerweise sollten bei AufzÃ¤hlungen kurze, prÃ¤gnante unvollstÃ¤ndige SÃ¤tze zum Einsatz kommen. Der Vortrag soll nicht darin bestehen, den Inhalt der Folien vorzulesen!
 
-Am Ende der Präsentation sollte die Zusammenfassung des Vortrags (1 -- 2 Folien) gegeben werden. Eine Schlussfolie (\glqq Noch Fragen?\grqq, \glqq That's all folks!\grqq, Bilder von Haustieren und ähnliches) stellt erfahrungsgemäß eine schlechtere Diskussionsgrundlage als eine Zusammenfassungsfolie dar.
+Am Ende der PrÃ¤sentation sollte die Zusammenfassung des Vortrags (1 -- 2 Folien) gegeben werden. Eine Schlussfolie (\glqq Noch Fragen?\grqq, \glqq That's all folks!\grqq, Bilder von Haustieren und Ã¤hnliches) stellt erfahrungsgemÃ¤Ã¤ eine schlechtere Diskussionsgrundlage als eine Zusammenfassungsfolie dar.
 
 %==============================================================================
 \nocite{rfc:socks}
