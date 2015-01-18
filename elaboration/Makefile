@@ -1,11 +1,11 @@
 pdf:
-	pdflatex  praxis-seminar.tex
+	pdflatex  seminar.tex
 	
 bib:
-	pdflatex  praxis-seminar.tex
-	bibtex praxis-seminar 
-	pdflatex  praxis-seminar.tex
-	pdflatex  praxis-seminar.tex
+	pdflatex  seminar.tex
+	bibtex seminar 
+	pdflatex  seminar.tex
+	pdflatex  seminar.tex
 	
 clean:
 	rm -f *.aux *.bbl *.log *.swp *.toc *.out *.blg *.lof
