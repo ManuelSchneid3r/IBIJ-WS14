@@ -117,15 +117,15 @@ Circuits werden inkrementell erstellt, das heißt, dass bei der Erstellung dem C
 
 Auf das Diffie-Hellman Schlüsselaustauschverfahren \cite{dh} wird hier nicht weiter eingegangen. Es wird angenommen, dass die beiden Kommunikationspartner auf sicherem Wege einen symmetrischen Schlüssel $K_1$ zur weiteren verschlüsselten Kommunikation ausgehandelt haben. Der Onion Proxy und $\textit{OR}_1$ können nun mit $K_1$ verschlüsselte Relay Cells austauschen. 
 
-\begin{figure}[t]
+Um den Circuit um einen weiteren Onion Router $\textit{OR}_2$ zu erweitern, sendet der Onion Proxy eine Extend Relay Cell an $\textit{OR}_1$. Die Extend Relay Cell enthält die Adresse des neuen Onion Routers $\textit{OR}_2$ und die erste Hälfte eines Diffie-Hellman Handshakes als Nutzlast. Wenn schon eine Verbindung besteht, weil schon ein Circuit existiert, der über die beiden Onion Router läuft, wird diese verwendet. Wenn keine Verbindung besteht, erstellt $\textit{OR}_1$ eine neue TLS\cite{rfc:tls} gesicherte TCP Verbindung zu $\textit{OR}_2$. $\textit{OR}_1$ packt die Hälfte des Diffie-Hellman Handshakes von $\textit{OR}_1$ in eine Create Control Cell und sendet diese an $\textit{OR}_2$. Wie im ersten Schritt bekommt $\textit{OR}_1$ eine Created Control Cell von $\textit{OR}_2$ zurück. $\textit{OR}_1$ verpackt die Antwort in eine Extended Relay Cell und leitet sie weiter an den Onion Proxy.
+
+\begin{figure}[h]
 \centering{
   \includegraphics[width=0.9\textwidth]{pics/construction.pdf}
   \caption{Darstellung des Aufbaus und der Verwendung eines Circuits. Quelle: \cite{tor}}
   \label{fig:construction} 
 }
 \end{figure}
-
-Um den Circuit um einen weiteren Onion Router $\textit{OR}_2$ zu erweitern, sendet der Onion Proxy eine Extend Relay Cell an $\textit{OR}_1$. Die Extend Relay Cell enthält die Adresse des neuen Onion Routers $\textit{OR}_2$ und die erste Hälfte eines Diffie-Hellman Handshakes als Nutzlast. Wenn schon eine Verbindung besteht, weil schon ein Circuit existiert, der über die beiden Onion Router läuft, wird diese verwendet. Wenn keine Verbindung besteht, erstellt $\textit{OR}_1$ eine neue TLS\cite{rfc:tls} gesicherte TCP Verbindung zu $\textit{OR}_2$. $\textit{OR}_1$ packt die Hälfte des Diffie-Hellman Handshakes von $\textit{OR}_1$ in eine Create Control Cell und sendet diese an $\textit{OR}_2$. Wie im ersten Schritt bekommt $\textit{OR}_1$ eine Created Control Cell von $\textit{OR}_2$ zurück. $\textit{OR}_1$ verpackt die Antwort in eine Extended Relay Cell und leitet sie weiter an den Onion Proxy.
 
 Wie in Abbildung \ref{fig:construction} nachvollzogen werden kann, hat sich der Extend Vorgang nicht geändert. Der Vorgang wurde lediglich vom Onion Proxy entfernt durch Relay Cells erledigt. Wichtig ist, dass der Schlüsselaustausch hier zwischen dem Onion Proxy und $\textit{OR}_2$ stattgefunden hat, $\textit{OR}_1$ hat die Daten lediglich weitergeleitet. Auch konnte $\textit{OR}_1$ keine Informationen gewinnen, da eine Hälfte des Schlüsselaustausches verschlüsselt wurde. Der Circuit ist nun um $\textit{OR}_2$ erweitert und der Onion Proxy und $\textit{OR}_2$ können nun mit $K_2$ wiederum verschlüsselte Relay Cells austauschen. Auf diese Weise können beliebig viele weitere Onion Router zu dem Circuit hinzugefügt werden.
 
@@ -139,7 +139,15 @@ Das führt dazu, dass alle Circuits dem selben TCP-Mechanismus zugrundeliegen.
 Joel Reardon fand heraus, dass die Latenzen weder beim Empfangen noch vom Verarbeiten der Daten enstehen.
 Er stellte fest, dass die Daten die meiste Zeit in den Output Buffern der TCP Implementierung warten und dass die Ursache für die Latenzen die TCP Congestion Control ist, welche Circuits mit niedriger Bandbreite im Vergleich zu Circuits mit hohem Durchsatz benachteiligt \cite{tcp-over-dtls-thesis,tcp-over-dtls}.
 
-\begin{figure}[bh]
+TCP garantiert eine fehlerfreie und Ordnung erhaltende Datenübertragung. Dazu wird jedes Paket, das vom Sender versendet wird, vom Empfänger bestätigt.
+%Unbestätigte Pakete werden als ``unterwegs'' beziehungsweise ``On-the-fly'' angenommen, das bedeutet, dass sie noch im Netzwerk befinden.
+Um unnötige Latenz zu vermeiden, wird dieser Prozess teils parallelisiert, das heißt, der Sender kann Pakete versenden bevor Bestätigungen der vorgehenden Pakete eingegangen sind. Dies muss jedoch begrenzt werden, da unter den bisherigen Bedingungen alle anstehenden Pakete versendet werden könnten, was das Netzwerk temporär überlasten würde.
+
+Um die Last auf dem Netzwerk zu reduzieren wurde beim Sender ein sogenanntes \textit{Congestion Window} (CWND) zur Staukontrolle eingeführt. Das Congestion Window ist ein fiktives Fenster um die Reihe der zu versendenden Pakete, die ohne Bestätigung der Vorgänger versendet werden und somit parallel unterweges sein dürfen.
+
+Teil des Congestion Control Mechanismus ist auch das Verwerfen von Paketen bei zu hoher Auslastung des Netzwerks. Nach einem festgelegten Timeout werden Pakete vom Sender als verworfen angenommen und neu versendet. An dieser Stelle wird nicht tiefer in die Details des Transmission Control Protocols eingegangen, mehr Informationen zum Handling des Congestion Windows und TCP generell kann in den relevanten RFCs gefunden werden \cite{rfc:tcp, rfc:tcpcc}.
+
+\begin{figure}[h]
 \centering{
   \includegraphics[width=0.8\textwidth]{pics/BufferPic.pdf}
   \caption{Beispielszenario in dem das Cross Circuit Interference Problem auftreten kann. Quelle: \cite{pctcp} }
@@ -147,73 +155,38 @@ Er stellte fest, dass die Daten die meiste Zeit in den Output Buffern der TCP Im
 }
 \end{figure} 
 
-TCP garantiert eine fehlerfreie und Ordnung erhaltende Datenübertragung.
-Dazu wird jedes Paket, das vom Sender versendet, wird vom Empfänger bestätigt.
-Unbestätigte Pakete werden als ``unterwegs'' beziehungsweise ``On-the-fly'' angenommen, das bedeutet, dass sie noch im Netzwerk befinden.
-Um unnötige Latenz zu vermeiden, wird dieser Prozess teils paralellisiert, das heißt, der Sender kann Pakete versenden bevor Bestätigungen der vorgehenden Pakete eingegangen sind.
-Dies muss jedoch begrenzt werden, da unter den bisherigen Bedingungen alle anstehenden Pakete versendet werden könnten, was das Netzwerk temporär überlasten würde.
-Um nun die Last auf dem Netzwerk zu reduzieren wurde beim Sender ein sogenanntes \textit{Congestion Window} (CWND) zur Staukontrolle eingeführt.
-Das Congestion Window ist ein fiktives Fenster um eine Reihe von Paketen, die ohne Bestätigung versendet werden dürfen und somit On-the-fly sind.
-Teil des Congestion Control Mechanismus ist das Verwerfen von Paketen bei zu hoher Auslastung des Netzwerks.
-Nach einem festgelegten Timeout werden Pakete vom Sender als verworfen angenommen und neu versendet.
-An dieser Stelle wird nicht tiefer in die Details des Transmission Control Protocols eingegangen, mehr Informationen zum Handling des Congestion Windows und TCP generell kann in den relevanten RFCs gefunden werden \cite{rfc:tcp, rfc:tcpcc}.
-
-In Abbildung \ref{fig:buffer} wird ein Szenario dargestellt in dem der Fluss der Daten zweier Circuits über eine TCP Verbindung vereint wird.
-Ein Circuit wird verwendet um eine Verbindung zu einer Webseite herzustellen und der andere Circuit wird verwedet um große Datenmengen mit der Filesharing Anwendung Bittorrent zu übertragen.
-Beide Circuits laufen Über OR1 und OR2. 
-Bei der aktuellen \textsc{Tor}-Architektur bedeutet das, dass die beiden Circuits die TCP Verbindung zwischen OR1 und OR2 und speziell die Aus- und Eingangspuffer im Kernelspace teilen.
-Unter Last kann das dazu führen, dass Circuits die relativ wenig Daten fördern, wie der Circuit zum Besuch der Webseite in dem obigen Szenario, verhältnismäßig große Latenzen haben.
-Grund dafür ist das Head-on-line Blocking, welches entsteht wenn Pakete verloren gehen.
-Wie in Abbildung \ref{fig:headonline} zu sehen, werden Daten, die bereits empfangen wurden, nicht freigegeben, weil noch auf ein bestimmtes in der Sequenz vorhergehendes Paket gewartet wird.
-Da TCP für das erhalten der Ordnung des Datenstroms zuständig ist, dürfen die Pakete nicht an Tor weitergegeben werden.
-Der TCP Spezifikation entsprechend ist das erwünscht, für die Circuits in Tor aber nicht notwendig, da die Ordung schon auf der Streamebene erhalten wird.
+In Abbildung \ref{fig:buffer} wird ein Szenario dargestellt in dem der Fluss der Daten zweier Circuits über eine TCP Verbindung vereint wird. Ein Circuit wird verwendet um eine Verbindung zu einer Webseite herzustellen und der andere Circuit wird verwedet um große Datenmengen mit der Filesharing Anwendung Bittorrent zu übertragen. Beide Circuits laufen Über OR1 und OR2. Bei der aktuellen \textsc{Tor}-Architektur bedeutet das, dass die beiden Circuits die TCP Verbindung zwischen OR1 und OR2 und speziell die Aus- und Eingangspuffer im Kernelspace teilen. Unter Last kann das dazu führen, dass Circuits die relativ wenig Daten fördern, wie der Circuit zum Besuch der Webseite in dem obigen Szenario, verhältnismäßig große Latenzen haben.
 
 
-Wenige Daten des Circuits mit der niedrigen Bandbreite und viele Daten des Circuits mit der hohen Bandbreite im Ausgangspuffer sind und ein Paket des letzten Circuits verloren geht oder verworfen wird.
+\newpage Grund dafür ist das Head-on-line Blocking, welches entsteht wenn Pakete verloren gehen beziehungsweise bei Überlastung des Netzwerks verworfen werden. In diesem Fall setzt der Mechanismus der Staukontrolle ein. Der Sender erhält keine Bestätigung und die Pakete werden nach dem festgesetzten Timeout neu übertragen. Wie in Abbildung \ref{fig:headonline} zu sehen, werden Daten, die längst in Input Buffer zum lesen bereit sind, nicht freigegeben, weil auf ein bestimmtes, in der Sequenz vorhergehendes Paket gewartet wird. Da TCP für das erhalten der Ordnung des Datenstroms zuständig ist, dürfen die Pakete nicht an dei Anwendung weitergegeben werden. Der TCP Spezifikation entsprechend ist das erforderlich, für die Circuits in Tor ist das problematisch und nicht notwendig, da die Ordung schon auf der Streamebene erhalten wird.
 
-
-In diesem Fall setzt der Mechanismus der Staukontrolle ein.
-Die Pakete werden neu übertragen und die Pakete des Circuits mit der niedrigen Bandbreite, obwohl längst in Input Buffer zu lesen bereit, werden erst an die Anwendung weitergeleitet, wenn alle Pakete im Congestion Window bestätigt wurden.
-
-\begin{figure}[htc]
+\begin{figure}[h]
 \centering{
   \includegraphics[width=0.7\textwidth]{pics/headonlinevanilla.pdf}
-  \caption{Die unterschiedlich schattierten Rechtecke stellen Cells unterschiedlicher Circuits dar. Die schwarzen Cells sind bereit zur Weitergabe an die Anwendung werden aber zurückgehalten, weil auf das verlorene Paket gewartet wird. Quelle: \cite{tcp-over-dtls}}
+  \caption{Die unterschiedlich schattierten Rechtecke stellen Cells unterschiedlicher Circuits dar. Die letzten zwei Cells sind bereit zur Weitergabe an die Anwendung werden aber zurückgehalten, weil auf das verlorene Paket gewartet wird. Quelle: \cite{tcp-over-dtls}}
   \label{fig:headonline} 
 }
 \end{figure}
 
-%------------------------------------------------------------------------------
-\subsection{TCP-over-DTLS}
-\label{sec:DTLSrealtedwork}
+%==============================================================================
+\section{PCTCP}
+\label{sec:pctcp}
 
-In dem Artikel in dem Reardon auf diese Schwachstelle hinweist, schlagen die Autoren eine Lösungsansatz vor in dem das Design dahingehend verändert wird, dass die für \textsc{Tor} unnötige Garnatie, die Ordung Datenpakete zu erhalten, umgangen wird, indem für die Verbindung zwischen den Onion Routern eine UDP, genauer DTLS, Verbindung verwendet wird, worauf ein TCP Stack im Userspace aufsetzt: Ein DTLS Tunnel für einzelne TCP Verbindungen \cite{tcp-over-dtls}.
+In dem Artikel in dem Reardon auf diese Schwachstelle hinweist, schlagen die Autoren eine Lösungsansatz vor, in dem das Design dahingehend verändert wird, dass die für \textsc{Tor} unnötige Garantie die Ordung der Datenpakete zu erhalten umgangen wird. Das wir erreicht, indem für die Verbindungen zwischen den Onion Routern UDP Verbindungen verwendet werden, worauf ein TCP Stack im Userspace aufsetzt. \cite{tcp-over-dtls}. Die Autoren nennen diesen Ansatz TCP-over-DTLS.
 
-Im Detail bedeutet das, dass für die Verbindungen der einzelnen Circuits jeweils eine TCP Verbindung mit dem TCP Stack im Userspace aufgebaut wird. Dadurch bleiben alle positiven Eigenschaften der vorherigen TCP Verbindung erhalten und das Cross Circuit Interference Problem beziehungsweise das zugrunde liegende Head-on-line Blocking wird umgangen, da pro Verbindung nur noch ein Circuit besteht, der mit niemanden interferieren kann. Siehe dazu die graphische Veranschaulichung in Abbildung \ref{fig:headonlinedtls}.
+Im Detail bedeutet das, dass für die Verbindungen der einzelnen Circuits jeweils eine eigene TCP Verbindung aufgebaut wird. Dadurch bleiben alle positiven Eigenschaften der vorherigen TCP Verbindung erhalten und das Cross Circuit Interference Problem wird gelöst. Grund dafür ist, dass es nicht mehr vorkommen kann, dass mehrere Circuits dem Mechanismus der Staukontrolle einer einzigen TCP Verbindung unterliegen. Somit besteht keine Möglichkeit der Interferenz mehr, da es in der selben TCP Verbindung keine Cicuits mehr gibt auf die Einfluss genommen werden kann. Diese TCP Verbindungen werden aber nicht vom Betriebsystem geöffnet. Nach dem Design des TCP-over-DTLS ist der TCP Stack Teil der \textsc{Tor}-Software. Die Pakete werden im Userspace erstellt und erst dann an das Betriebssystem weiter gegeben um per UDP beziehungsweise DTLS versendet zu werden. Datagram Transport Layer Security ist das UDP Äquivalent zu TLS für TCP \cite{dtls}. Es sorgt für die Vertraulichkeit und Authentizität auf der Strecke zwischen den einzelnen Onion Routern. Da im Vergleich zu TCP Sockets der UDP Socket nicht gebunden wird, reicht für den TCP-over-DTLS Ansatz genau ein Socket für beliebig vielen Verbindungen zu anderen Onion Routern aus.
 
-Diese TCP Verbindungen werden aber nicht vom Betriebsystem geöffnet. Nach dem Design des TCP-over-DTLS ist der TCP Stack Teil der \textsc{Tor}-Software. Die Pakete werden im Userspace erstellt und erst dann an das Betriebssystem weiter gegeben um per UDP beziehungsweise DTLS versendet zu werden. DTLS ist ein UDP Äquivalent zu TLS für TCP \cite{dtls}. Es sorgt für die Vertraulichkeit und Authentizität auf der Strecke zwischen den einzelnen Onion Routern. Da im Vergleich zu TCP Sockets der UDP Socket nicht gebunden wird, reicht für den TCP-over-DTLS Ansatz genau ein Socket für beliebig vielen Verbindungen zu anderen Onion Routern aus.
+Wenn ein Paket verworfen wird, dann wird lediglich die Staukontrolle eines bestimmten Circuits aktiviert, da die Circuits eigenes Congestion Window haben. Alle anderen bleiben unberührt und es kommt zu keiner Cross Circuit Interference. Siehe dazu die graphische Veranschaulichung in Abbildung \ref{fig:headonlinedtls}. Des weiteren werden die Pakete, wenn sie verworfen werden, gleichverteilt über den Datenstrom verworfen. Daraus folgt, dass die Wahrscheinlichkeit dass ein Paket verworfen wird, proportional zum Bandbreitenbedarf des Circuits auf der Verbindung steigt und somit die Fairness der Staukontrolle wieder hergestellt ist.
 
-Wenn nun ein Paket verworfen wird, dann wird lediglich die Staukontrolle eines bestimmten Circuits aktiviert, da die Circuits je ein eigenes Congestion Window haben. Alle anderen bleiben unberührt und es kommt zu keiner Cross Circuit Interference. Des weiteren werden die Pakete, wenn sie verworfen werden, gleichverteilt über den Datenstrom verworfen. Daraus folgt, dass die Wahrscheinlichkeit dass ein Paket verworfen wird, proportional zum Bandbreitenbedarf des Circuits auf der Verbindung steigt und somit die Fairness der Staukontrolle wieder hergestellt ist.
+Die Lösung des TCP-over-DTLS scheint bestens geeignet, um die Latenzen im \textsc{Tor}-Netzwerk zu vermeiden. Die Autoren verwenden in ihrem Proof-of-concept allerdings die bereits vorhandene Userpace TCP Implementierung Daytona \cite{daytona}, aber in der Praxis gibt es leider keine Userpace TCP  Implementierung, deren Lizenz mit der des \textsc{Tor}-Projekts vereinbar ist. Daher entschied sich einer der Autoren, Ian Goldberg, einen alternativen Ansatz zu verfolgen, der auf dem selben ``Ein-Circuit-pro-TCP-Verbindung'' Prinzip des  TCP-over-DTLS aufbaut: das Per-Circuit TCP-over-IPsec. 
 
-
-\begin{figure}[htc]
+\begin{figure}[h]
 \centering{
   \includegraphics[width=0.7\textwidth]{pics/headonlinedtls.pdf}
   \caption{Die unterschiedlich schattierten Rechtecke stellen Cells unterschiedlicher Circuits dar. Alle empfangenen Cells werden nun an die Anwendung weitergegeben. Vergleiche Abbildung \ref{fig:headonline}. Quelle:\cite{tcp-over-dtls}}
   \label{fig:headonlinedtls} 
 }
 \end{figure} 
-
-% Einleitung in TCP-over-DTLS, der Ansatz den die Autoren versuchen zu verbessern. \\
-% Aufzeigen der Probleme und der Punkte an denen die Verbesserungen ansetzen.\\
-% Witzig weil die viel labern, aber im Prinzip gibts nur ein Problem.
-% sonst schenken sich die Ansätze nichts großartig, im gegenteil
-
-%==============================================================================
-\section{PCTCP}
-\label{sec:pctcp}
-
-Die Lösung des TCP-over-DTLS scheint bestens geeignet, um die Latenzen im \textsc{Tor}-Netzwerk zu vermeiden. Die Autoren verwenden in ihrem Proof-of-concept die bereits vorhandene Userpace TCP Implementierung Daytona \cite{daytona}, aber in der Praxis gibt es leider keine Userpace TCP  Implementierung, deren Lizenz mit der des \textsc{Tor}-Projekts vereinbar ist. Daher entschied sich einer der Autoren, Ian Goldberg, einen alternativen Ansatz zu verfolgen, der auf dem selben ``Ein-Circuit-pro-TCP-Verbindung'' Prinzip des  TCP-over-DTLS aufbaut: Per-Circuit TCP-over-IPsec. 
 
 \subsection{Design}
 
@@ -224,9 +197,24 @@ Wie auch im Standard \textsc{Tor} verbindet sich der Onion Proxy $\textit{OP}$ m
 
 \subsection{IPSec}
 
-Nach dem bisherigen Design ist es einem Überwacher eines Onion Routers möglich die Verbindungen zu zählen und den Datenverkehr einzelner Verbindungen zu analysieren. Die Autoren des PCTCP schlagen vor, dies mit IPSec zu verhindern, indem die Onion Router zu Onion Router Verbindungen mit IPSec gesichert werden. 
+Nach dem bisherigen Design ist es einem Überwacher eines Onion Routers möglich die Verbindungen zu zählen und den Datenverkehr einzelner Verbindungen zu analysieren. Die Autoren des PCTCP schlagen vor, dies mit IPSec zu verhindern, indem die Onion Router zu Onion Router Verbindungen mit IPSec gesichert werden. Internet Protocol Security (IPSec) ist eine Protollfamilie die Verbindungen über ein potentiell unsicheres Netzwerk sichern soll.
+IPsec soll in einem solchen Netzwerk die Schutzziele Vertraulichkeit, Authentizität und Integrität erhalten. Dazu bietet IPSec zwei Protokolle die in je zwei Modi betrieben werden können: IP Authentication Header (AH) \cite{rfc:ah} und IP Encapsulating Security Payload (ESP) \cite{rfc:esp}.
 
-Internet Protocol Security (IPSec) ist eine Protollfamilie die Verbindungen über ein potentiell unsicheres Netzwerk sichern soll. IPsec soll in einem solchen Netzwerk die Schutzziele Vertraulichkeit, Authentizität und Integrität einhalten. Dazu bietet IPSec zwei Protokolle die in je zwei Modi betrieben werden können. Bei den beiden Protokollen die IPSec bietet handelt es sich um \textit{IP Authentication Header} (AH) \cite{rfc:ah} und \textit{IP Encapsulating Security Payload} (ESP) \cite{rfc:esp}, welche im \textit{Transportmodus} oder im \textit{Tunnelmodus} betrieben werden können. Der IP Authentication Header bietet Datenintegrität und -authentizität und optional Features um Replayattacken zu verhindern. IP Encapsulating Security Payload bietet die selbe Menge an Features, allerdings bietet es zusätzlich Vertraulichkeit des Datenverkehrs durch Verschlüsselung. Der Transportmodus für AH und ESP ist sozusagen eine Peer-To-Peer Verbindung. Im Transportmodus verbinden AH und ESP Hosts, die bezüglich der Verschlüsselung und Kommunikation Endpunkte sind. Wie in Abbildung \ref{fig:pctcpheader} zu sehen, wird ab dem TCP/UDP Header das gesamte Packet verschlüsselt und in ein IPsec Paket gepackt. Der IP Header bleibt ausserhalb und wird weiterhin für das komplette Routing verwendet. Im Tunnelmodus werden zwei Netzwerke duch IPsec-Gateways in den jeweiligen Netzwerken verbunden. Dazu wird der komplette Datenverkehr zwischen den beiden Netzwerken über die Verbindung der Gateways getunnelt. Die Pakete des Datenverkehrs werden von den Gateways gekapselt und mit neuen IP header versehen. Dieser dient dem Routing bis zum anderen Gateway. Letzteres entpackt das empfangene Paket und leitet es in das eigene Netzwerk weiter. In diesem Modus sind die Endpunkte bezüglich der Verschlüsselung und Kommunikation nicht zwangsweise die selben Instanzen.
+Der IP Authentication Header erlaubt zwei Hosts sich sich zu gegenseitig authentisieren und schützt die Integrität der übertagenen Daten. Optional bietet es Features um Replayattacken zu verhindern. Allerdings bietet es keine Vertraulichkeit der Daten.
+
+IP Encapsulating Security Payload bietet ebenfalls Authentisierung und Integrität der übertagenen Daten. Zusätzlich können mit dem ESP die übertragenen Daten verschlüsselt werden, nachdem mit einem der Schlüsselaustauschverfahren, die auch Teil der IPsec Familie sind, ein gemeinsamer Schlüssel ausgehandelt wurde.
+
+Beide Protokolle können in zwei Modi betrieben werden: Dem Transport- und Tunnelmodus.
+
+Der Transportmodus für AH und ESP ist sozusagen eine Peer-To-Peer Verbindung.
+
+Im Transportmodus verbinden AH und ESP Hosts, die bezüglich der Verschlüsselung und Kommunikation Endpunkte sind.
+
+Wie in Abbildung \ref{fig:pctcpheader} zu sehen, wird ab dem TCP/UDP Header das gesamte Packet verschlüsselt und in ein IPsec Paket gepackt.
+Der IP Header bleibt ausserhalb und wird weiterhin für das komplette Routing verwendet. Im Tunnelmodus werden zwei Netzwerke duch IPsec-Gateways in den jeweiligen Netzwerken verbunden.
+Dazu wird der komplette Datenverkehr zwischen den beiden Netzwerken über die Verbindung der Gateways getunnelt.
+Die Pakete des Datenverkehrs werden von den Gateways gekapselt und mit neuen IP header versehen. Dieser dient dem Routing bis zum anderen Gateway.
+Letzteres entpackt das empfangene Paket und leitet es in das eigene Netzwerk weiter. In diesem Modus sind die Endpunkte bezüglich der Verschlüsselung und Kommunikation nicht zwangsweise die selben Instanzen.
 
 \begin{figure}[b]
   \centering
@@ -243,11 +231,24 @@ Internet Protocol Security (IPSec) ist eine Protollfamilie die Verbindungen übe
   \caption{Vergleiche Zwischen Standard-\textsc{Tor} und PCTCP.}
 \end{figure}
 
-Da IP Encapsulating Security Payload alle Fähigkeiten des IP Authentication Header und zusätzlich die für \textsc{Tor} wichtige Vertraulichkeit besitzt, wird für die Zwecke im PCTCP Encapsulating Security Payload verwendet. Zusätzlich würde Authentication Header ein praktisches Problem für \textsc{Tor} darstellen, da es nicht mit Network Adress Translation (NAT) \cite{rfc:nat} vereinbar ist. NAT ist ein Verfahren, das die Netzwerkadressen in den  Headern der IP Pakete verändert, um mehrere Adressen auf eine abzubilden. Sinnvollerweise kommt dieser Mechanismus in Routern zum Einsatz und wird standardmäßig von den Internetgateways (Router) in Privathaushalten verwendet. Grund für die Inkompatibilität ist die Tatsache, dass Authentication Header die Integrität des IP Headers überwacht, welches aber während des Prozesses der Network Adress Translation geändert wird. Da \textsc{Tor} ein Netzwerk aus Freiwilligen ist und diese in den meisten Fällen vom Heimnetzwerk aus hinter einem Gateway mit NAT sind, kommt AH nicht in Frage und ESP wird für die Verbindungen gewählt. Die Verbindungen die mit IPSec gesichert werden sollen, sind übliche Host-to-Host Verbindungen. Die Daten werden von einem Onion Router zu einem anderen geroutet. Das bedeuet, dass die Hosts bezüglich der Verschlüsselung und Kommunikation Endpunkte sind. Folglich wurde entscheiden, dass für die Zwecke des PCTCP das IP Encapsulating Security Payload im Transport Mode verwendet wird.
+Da IP Encapsulating Security Payload alle Fähigkeiten des IP Authentication Header und zusätzlich die für \textsc{Tor} wichtige Vertraulichkeit besitzt, wird für die Zwecke im PCTCP Encapsulating Security Payload verwendet.
+Zusätzlich würde Authentication Header ein praktisches Problem für \textsc{Tor} darstellen, da es nicht mit Network Adress Translation (NAT) \cite{rfc:nat} vereinbar ist.
+NAT ist ein Verfahren, das die Netzwerkadressen in den  Headern der IP Pakete verändert, um mehrere Adressen auf eine abzubilden.
+Sinnvollerweise kommt dieser Mechanismus in Routern zum Einsatz und wird standardmäßig von den Internetgateways (Router) in Privathaushalten verwendet.
+Grund für die Inkompatibilität ist die Tatsache, dass Authentication Header die Integrität des IP Headers überwacht, welches aber während des Prozesses der Network Adress Translation geändert wird.
+Da \textsc{Tor} ein Netzwerk aus Freiwilligen ist und diese in den meisten Fällen vom Heimnetzwerk aus hinter einem Gateway mit NAT sind, kommt AH nicht in Frage und ESP wird für die Verbindungen gewählt.
+Die Verbindungen die mit IPSec gesichert werden sollen, sind übliche Host-to-Host Verbindungen.
+Die Daten werden von einem Onion Router zu einem anderen geroutet. Das bedeuet, dass die Hosts bezüglich der Verschlüsselung und Kommunikation Endpunkte sind.
+Folglich wurde entscheiden, dass für die Zwecke des PCTCP das IP Encapsulating Security Payload im Transport Mode verwendet wird.
 
-Da IPSec im Transport Mode den TCP Header mitverschlüsselt, kann ein Überwacher eines Onion Routers die Verbindungen nicht mehr unterscheiden, und somit keine Verbindungen mehr zählen oder den Datenverkehr einzelner Verbindungen analysieren. Da das Encapsulating Security Payload Protokoll bereits für die Vertraulichkeit der Verbindungen sorgt, ist die Verschlüsselung durch SSL/TLS beziehungsweise DTLS redundant und kann ausgelassen werden. Schliesslich vervollständigt sich das Bild des Designs, das die Autoren des PCTCP vorschlagen. Entsprechend der Namensgebung des Per-Circuit TCP-over-IPsec werden Verbindungen über \textsc{Tor}, die Circuits, in jeweils eigenen TCP Verbindungen, welche über IPSec gesichert werden, erstellt. Eine graphische Darstellung des Designs befindet sich in Abbildung \ref{fig:pctcpdesign}.
+Da IPSec im Transport Mode den TCP Header mitverschlüsselt, kann ein Überwacher eines Onion Routers die Verbindungen nicht mehr unterscheiden, und somit keine Verbindungen mehr zählen oder den Datenverkehr einzelner Verbindungen analysieren.
+Da das Encapsulating Security Payload Protokoll bereits für die Vertraulichkeit der Verbindungen sorgt, ist die Verschlüsselung durch SSL/TLS beziehungsweise DTLS redundant und kann ausgelassen werden.
+Schliesslich vervollständigt sich das Bild des Designs, das die Autoren des PCTCP vorschlagen.
+Entsprechend der Namensgebung des Per-Circuit TCP-over-IPsec werden Verbindungen über \textsc{Tor}, die Circuits, in jeweils eigenen TCP Verbindungen, welche über IPSec gesichert werden, erstellt.
+Eine graphische Darstellung des Designs befindet sich in Abbildung \ref{fig:pctcpdesign}.
 
-In Experimenten zeigten AlSabah und Goldberg, dass durch PCTCP eine 60 prozentige Verbesserung der Latenzen und circa 30 prozentige Verbesserung der Downloadzeiten erreicht werden konnten. Die einzelnen Experimente und die genauen Ergebnisse sind in \cite{pctcp} einzusehen.
+In Experimenten zeigten AlSabah und Goldberg, dass durch PCTCP eine 60 prozentige Verbesserung der Latenzen und circa 30 prozentige Verbesserung der Downloadzeiten erreicht werden konnten.
+Die einzelnen Experimente und die genauen Ergebnisse sind in \cite{pctcp} einzusehen.
 
 % Konzept der Verbindung innerhalb des netzwerks\\
 % Illustrationen\\
@@ -286,6 +287,11 @@ Abgesehen vom Hauptziel seine Nutzer zu anonymisieren, unterliegt das Design von
 
 %\textsc{Tor} combines all the circuits going between two \textsc{Tor} relays into a single TCP connection. This approach is a smart idea in terms of anonymity, since putting all circuits on the same connection prevents an observer from learning which packets correspond to which circuit. But over the past year, research has shown that it’s a bad idea in terms of performance, since TCP’s backoff mechanism only has one option when that connection is sending too many bytes: slow it down, and thus slow down all the circuits going across it. We could fix this problem by switching to a design with one circuit per TCP connection. But that means that a relay with 1000 connections and 1000 circuits per connection would need a million sockets open. That number is a problem for even the well-designed operating systems and routers out there.\cite{tor_improvements}
 
+
+% Einleitung in TCP-over-DTLS, der Ansatz den die Autoren versuchen zu verbessern. \\
+% Aufzeigen der Probleme und der Punkte an denen die Verbesserungen ansetzen.\\
+% Witzig weil die viel labern, aber im Prinzip gibts nur ein Problem.
+% sonst schenken sich die Ansätze nichts großartig, im gegenteil
 
 
 %==============================================================================
