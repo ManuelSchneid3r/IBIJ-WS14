@@ -5,7 +5,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[ngerman]{babel} % neue deutsche Rechtschreibung 
 \usepackage{babelbib}       % deutsches Literaturverzeichnis
-\usepackage{verbatim}
+\usepackage{verbatim} 
+
 
 
 % Background
@@ -17,6 +18,10 @@
 \node[scope fading=west,inner sep=0pt,outer sep=0pt,anchor=north east] at(\paperwidth*1.3,\paperheight*0.83) {\includegraphics[height=\paperheight]{pics/uni}};
 \end{tikzpicture}
 }
+
+\PassOptionsToPackage{usenames}{color} 
+\usepackage{color} 
+\usepackage[usenames]{color} 
 
 
 %^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -63,7 +68,7 @@
 %//////////////////////////////////////////////////////////////////////////////
 %==============================================================================
 
-\begin{frame}[plain]
+\begin{frame}
   \titlepage
 \end{frame}
 
@@ -80,93 +85,102 @@ gfsdfs
 
 
 
-\begin{frame}{Tor - Architektur/Terminologie}
+\begin{frame}{\textsc{Tor} - Architektur/Terminologie}
+  \begin{figure}
+    \includegraphics[width=\textwidth]{pics/tor}
+  \end{figure}
 Das Große und Ganze
 Onion Routing, Cell, Circuit, Stream, Onion Router,- Proxy
 \end{frame}
 
 
 
-\begin{frame}{Cells - Das Tor Tranportmittel}
+\begin{frame}{Cells - Das \textsc{Tor} Tranportmittel}
  
-\begin{figure}
   \begin{columns}[c]
-    \column{.5\textwidth}
-      \includegraphics[width=\textwidth]{pics/cell}
-    \column{.5\textwidth}
-      \caption{Quelle: \cite{tor}}
-  \end{columns}
-\end{figure}
   
-  \only<1>
-  {
+    \column{.45\textwidth}
+    \begin{figure}
+      \includegraphics[width=\textwidth]{pics/cell}
+      \caption{Quelle: \cite{tor}}
+    \end{figure}
+    
+    \column{.55\textwidth}
     \begin{block}{Control Cell}
       \begin{itemize}
-	\item bla
-	\item bla
-	\item bla
-	\item bla
+	\item Dienen dem Management der Circuits
+	\begin{itemize}
+	  \item Aufbau, Abbau, Keepalive
+	\end{itemize}
+	\item Werden vom Onion Router interpretiert, der sie empfängt
       \end{itemize}
     \end{block} 
-  }
-  \only<2>
-  {
     \begin{block}{Relay Cell}
       \begin{itemize}
-	\item bla
-	\item bla
-	\item bla
-	\item bla
+	\item Zur Weiterleitung der Daten auf dem Circuit
+	\item Zusätzlicher Relay Header
       \end{itemize}
     \end{block} 
-  }
+  
+    \begin{itemize}
+      \item Beide haben Circuit Identifier
+    \end{itemize}
+    
+  \end{columns}
 \end{frame}
 
-\begin{frame}{Onion Routing bzw Cell Relaying}
-Zeigen wie OR bzw Cell Relayin funct
-\end{frame}
-
-\begin{frame}{Circuits - Die Tor Transportwege}
-      \begin{itemize}
-	\item Pfade im Netzwerk entlang welcher die Cells gesendet werden
-	\item In der regel 3
-	\item inkrementellen Ausbauen des Circuits / Source routed
-	\item mit jedem Onion Router ein gemeinsamer Schlüssel
-	\item jede Verbindung hat Circuit Identifier
-      \end{itemize}
-\end{frame}
-
-
-\begin{frame}{Ciruit construction}
-      \begin{itemize}
-	\item Pfade im Netzwerk entlang welcher die Cells gesendet werden
-	\item In der regel 3
-	\item inkrementellen Ausbauen des Circuits / Source routed
-
-      \end{itemize}
-
-\end{frame}
- 
- 
-\begin{frame}{Ciruit construction}
+\begin{frame}{Circuits - Die \textsc{Tor} Transportwege}
   \begin{figure}
-  \centering{
-    \includegraphics[width=0.4\textwidth]{pics/construction.pdf}
-    \caption{Darstellung des Aufbaus und der Verwendung eines Circuits. Quelle: \cite{tor}}}
+    \includegraphics[width=.6\textwidth]{pics/tor}
   \end{figure}
   \begin{itemize}
-    \item Onion Proxy wählt anhand Exit Policies die Exit Node
-    \item Create Control Cell an OR\,1
-      \begin{itemize}
-	\item Enthält Diffie-Hellman Handshake
-	\item OR\,1 kennt nun den Schlüssel
-	\item Circuit Identifier wurde von Alice festgelegt
-      \end{itemize}
-    \item Created Control Cell zurück (OP kennt nun den Schlüssel)
-      \begin{itemize}
-	\item Alice kennt nun den Schlüssel
-      \end{itemize}
+    \item Pfade im Netzwerk entlang welcher die Cells gesendet werden
+    \item Werden Hop-by-hop aufgebaut
+    \begin{itemize}
+      \item Mit jedem Knoten wird ein Schlüssel ausgehandelt
+    \end{itemize}
+    \item Üblicherweise drei: Entry\-, Middle-, Exit Node
+    \item Jeder Hop hat einen Circuit Identifier
+    \item Werden nach einem Zeitintervall oder Fehler gewechselt
+    \item Werden auf Vorrat angelegt (Performace)
   \end{itemize}
+\end{frame}
+
+ 
+\begin{frame}{Circuits - Inkrementeller Aufbau}
+
+  \only<1>
+  {
+    \begin{itemize}
+      \item OP holt Informationen beim Directory Server 
+      \begin{itemize}
+	\item Router descriptor: Public Keys, Bandbreite, Adresse der OR
+      \end{itemize}      
+      \item Onion Proxy wählt anhand Exit Policies eine Exit Node
+      \item Danach weitere Onion Router,\\ sodass jeder nur einmal vorkommt
+    \end{itemize}
+  }
+  
+  \only<2>
+  {
+    \begin{itemize}
+      \item \textcolor{brown}{Create} Control Cell an OR\,1
+	\begin{itemize}
+	  \item Enthält Diffie-Hellman Handshake
+	  \item OR\,1 kennt nun den Schlüssel
+	  \item Circuit Identifier wurde von Alice festgelegt
+	\end{itemize}
+      \item \textcolor{brown}{Created} Control Cell zurück (OP kennt nun den Schlüssel)
+	\begin{itemize}
+	  \item Alice kennt nun den Schlüssel
+	\end{itemize}
+    \end{itemize}
+    \begin{figure}
+    \centering{
+      \includegraphics[width=0.8\textwidth]{pics/extension}
+      \caption{Quelle: \cite{tor}}}
+    \end{figure}
+  }
 \end{frame}
 
 
