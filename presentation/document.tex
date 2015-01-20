@@ -1,8 +1,12 @@
+%==============================================================================
+%vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
 \documentclass{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[ngerman]{babel} % neue deutsche Rechtschreibung 
 \usepackage{babelbib}       % deutsches Literaturverzeichnis
 \usepackage{verbatim}
+
 
 % Background
 \usepackage{tikz}
@@ -14,30 +18,21 @@
 \end{tikzpicture}
 }
 
-% \usepackage{moreverb}
-% \usepackage{array}
-% \usepackage{subfigure}
-% \usepackage{graphicx}
-%\usepackage{amsmath}
-%\usepackage{amsfonts}
-%\usepackage{amssymb}
-%\usepackage{cite}
-%\usepackage{url}
 
-%===============================================================================
-%///////////////////////////////////////////////////////////////////////////////
-%vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-\usetheme{Rochester}
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+%==============================================================================
+%vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+\usetheme{default}
 \usecolortheme{seagull}
 % Remove navigation
 \beamertemplatenavigationsymbolsempty
 % \setcounter{tocdepth}{2}
-% \usecaptiontemplate{
-% \scriptsize
-% %\structure{\insertcaptionname:}
-% \insertcaption
-% }
-% \setcounter{tocdepth}{2}
+\usecaptiontemplate{
+  \tiny
+  \insertcaption
+}
+
 
 % Use bullet as item for lists
 \setbeamertemplate{itemize items}{$\bullet$}
@@ -46,178 +41,292 @@
 % %\setbeamertemplate{itemize subsubitem}{{\tiny $\heartsuit$}}
 % \setbeamertemplate{footline}[frame number]
 % \setbeamertemplate{sections/subsections in toc}[circle]{}
-%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-%///////////////////////////////////////////////////////////////////////////////
-%///////////////////////////////////////////////////////////////////////////////
-%///////////////////////////////////////////////////////////////////////////////
-\begin{document}%///////////////////////////////////////////////////////////////
-%///////////////////////////////////////////////////////////////////////////////
-%///////////////////////////////////////////////////////////////////////////////
-%///////////////////////////////////////////////////////////////////////////////
-%===============================================================================
+
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+%==============================================================================
+
+
+
+
 \title{Per-Circuit TCP-over-IPsec Transport\\for Anonymous Communication Overlay Networks}   
 \author{Manuel Schneider}
 \institute{Albert Ludwigs Universität - Institut für Informatik} 
 \date{\today} 
-%------------------------------------------------------------------------------
+
+%==============================================================================
+%//////////////////////////////////////////////////////////////////////////////
+%//////////////////////////////////////////////////////////////////////////////
+%//////////////////////////////////////////////////////////////////////////////
+\begin{document}%//////////////////////////////////////////////////////////////
+%//////////////////////////////////////////////////////////////////////////////
+%//////////////////////////////////////////////////////////////////////////////
+%//////////////////////////////////////////////////////////////////////////////
+%==============================================================================
 
 \begin{frame}[plain]
-\titlepage
+  \titlepage
 \end{frame}
+
 
 \begin{frame}{Motivation}
+gfsdfs
 \end{frame}
 
-%===============================================================================
-%///////////////////////////////////////////////////////////////////////////////
-\section{Grundlagen}
-%///////////////////////////////////////////////////////////////////////////////
-%===============================================================================
+%==============================================================================
+%//////////////////////////////////////////////////////////////////////////////
+\section{TOR}
+%//////////////////////////////////////////////////////////////////////////////
+%==============================================================================
 
-\begin{frame}{Übersicht}
-\tableofcontents[sectionstyle=show/shaded, subsectionstyle=show/hide/hide]
+
+
+\begin{frame}{Tor - Architektur/Terminologie}
+Das Große und Ganze
+Onion Routing, Cell, Circuit, Stream, Onion Router,- Proxy
 \end{frame}
 
-%------------------------------------------------------------------------------
-\subsection{Tor}
 
-\begin{frame}{\subsecname}{\secname}
-Basics zu Tor (Ausmaß in der Präsentation abhäangig von Dirk).
-Reduziert sich minimal auf die Performancemängel und die Transportlayergeschich-
-te, die für diese Arbeit besonders von Belang ist.
-Themen:
+
+\begin{frame}{Cells - Das Tor Tranportmittel}
+ 
+\begin{figure}
+  \begin{columns}[c]
+    \column{.5\textwidth}
+      \includegraphics[width=\textwidth]{pics/cell}
+    \column{.5\textwidth}
+      \caption{Quelle: \cite{tor}}
+  \end{columns}
+\end{figure}
+  
+  \only<1>
+  {
+    \begin{block}{Control Cell}
+      \begin{itemize}
+	\item bla
+	\item bla
+	\item bla
+	\item bla
+      \end{itemize}
+    \end{block} 
+  }
+  \only<2>
+  {
+    \begin{block}{Relay Cell}
+      \begin{itemize}
+	\item bla
+	\item bla
+	\item bla
+	\item bla
+      \end{itemize}
+    \end{block} 
+  }
 \end{frame}
 
-%------------------------------------------------------------------------------
-\subsection{IPSec}
-\begin{frame}{\subsecname}{\secname}
-- Ipsec generell (Was warum wie wo)\\
+\begin{frame}{Onion Routing bzw Cell Relaying}
+Zeigen wie OR bzw Cell Relayin funct
 \end{frame}
 
-\begin{frame}{Subprotokolle}{\secname/\subsecname}
-- Authentication Header (AH)\\
-- Encapsulating Security Payload (ESP)\\
+\begin{frame}{Circuits - Die Tor Transportwege}
+      \begin{itemize}
+	\item Pfade im Netzwerk entlang welcher die Cells gesendet werden
+	\item In der regel 3
+	\item inkrementellen Ausbauen des Circuits / Source routed
+	\item mit jedem Onion Router ein gemeinsamer Schlüssel
+	\item jede Verbindung hat Circuit Identifier
+      \end{itemize}
 \end{frame}
 
-\begin{frame}{Operationmodi}{\secname/\subsecname}
-- transport mode\\
-- tunnel mode\\
-\end{frame}
 
-%===============================================================================
-%///////////////////////////////////////////////////////////////////////////////
-\section{Verwandte Arbeiten}
-%///////////////////////////////////////////////////////////////////////////////
-%===============================================================================
+\begin{frame}{Ciruit construction}
+      \begin{itemize}
+	\item Pfade im Netzwerk entlang welcher die Cells gesendet werden
+	\item In der regel 3
+	\item inkrementellen Ausbauen des Circuits / Source routed
 
-\begin{frame}{Übersicht}
-\tableofcontents[sectionstyle=show/shaded, subsectionstyle=show/hide/hide]
-\end{frame}
-
-\begin{frame}{TCP-over-DTLS}{\secname}
--Einleitung in TCP-over-DTLS\\
--Wo wird es verwendet0\\
+      \end{itemize}
 
 \end{frame}
-
-\begin{frame}{TCP-over-DTLS}{\secname}
--Funktionsweise
-
+ 
+ 
+\begin{frame}{Ciruit construction}
+  \begin{figure}
+  \centering{
+    \includegraphics[width=0.4\textwidth]{pics/construction.pdf}
+    \caption{Darstellung des Aufbaus und der Verwendung eines Circuits. Quelle: \cite{tor}}}
+  \end{figure}
+  \begin{itemize}
+    \item Onion Proxy wählt anhand Exit Policies die Exit Node
+    \item Create Control Cell an OR\,1
+      \begin{itemize}
+	\item Enthält Diffie-Hellman Handshake
+	\item OR\,1 kennt nun den Schlüssel
+	\item Circuit Identifier wurde von Alice festgelegt
+      \end{itemize}
+    \item Created Control Cell zurück (OP kennt nun den Schlüssel)
+      \begin{itemize}
+	\item Alice kennt nun den Schlüssel
+      \end{itemize}
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{Probleme beim TCP-over-DTLS}{\secname}
--Aufzeigen der Probleme und der Punkte an denen die Verbesserungen ansetzen.\\
--Einleitung in das PCTCP
+
+\begin{frame}{Cross Circuit Interference Problem.}
+  \begin{figure}
+    \includegraphics[width=0.8\textwidth]{pics/BufferPic.pdf}
+    \caption{ Quelle: \cite{pctcp}}
+  \end{figure} 
 \end{frame}
 
-%===============================================================================
-%///////////////////////////////////////////////////////////////////////////////
+
+\begin{frame}{Head On Line Blocking}
+  \begin{figure}
+    \includegraphics[width=0.7\textwidth]{pics/headonlinevanilla.pdf}
+    \caption{Quelle: \cite{tcp-over-dtls}}
+  \end{figure}
+\end{frame}
+
+
+%==============================================================================
+%//////////////////////////////////////////////////////////////////////////////
+\section{IPSec}
+%//////////////////////////////////////////////////////////////////////////////
+%==============================================================================
+
+\begin{frame}{Internet Protocol Security (IPSec)}
+  \begin{itemize}
+    \item Arbeitet auf Vermittlungsschicht
+    \item Stellt Schutzziele sicher
+    \begin{itemize}
+      \item Vertraulichkeit
+      \item Authentizität
+      \item Integrität
+    \end{itemize}
+    \item Umfasst Protkolle für eine gesicherte Kommunikation
+    \begin{itemize}
+      \item Authentication Header (AH)
+      \item Encapsulating Security Payload (ESP)
+    \end{itemize}
+    \item Je zwei Betriebsmodi
+    \begin{itemize}
+      \item Transport Modus
+      \item Tunnel Modus
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{IPSec - Protokolle}
+ \begin{block}{IP Authentication Header (AH)}
+  \begin{itemize}
+   \item Stellt Authentizität und Integrität der Daten sicher
+   \item Authentifiziert Sender 
+   \item Schützt gegen Replay-Angriffe
+   \item Inkompatibel mit Network Adress Translation!
+  \end{itemize}
+ \end{block}
+ \begin{block}{IP Encapsulating Security Payload (ESP)}
+  \begin{itemize}
+   \item Selbes Featureset wie AH
+   \item Stellt zusätzlich Vertraulichkeit der Daten sicher
+  \end{itemize}
+ \end{block}
+\end{frame}
+
+
+\begin{frame}{IPSec - Betriebsmodi}
+  \begin{figure}
+    \includegraphics[width=0.7\textwidth]{pics/modes}
+    \caption{Quelle: www.wikimedia.com}
+  \end{figure} 
+  \only<1>
+  {
+    \begin{block}{Transport Modus}
+      \begin{itemize}
+	\item IP Header bleibt unberührt, auch bei ESP
+      \end{itemize}
+    \end{block} 
+  }
+  \only<2>
+  {
+    \begin{block}{Tunnel Modus}
+      \begin{itemize}
+	\item Zusätzlicher IP Header 
+      \end{itemize}
+    \end{block} 
+  }
+\end{frame}
+
+%==============================================================================
+%//////////////////////////////////////////////////////////////////////////////
 \section{PCTCP}
-%///////////////////////////////////////////////////////////////////////////////
-%===============================================================================
+%//////////////////////////////////////////////////////////////////////////////
+%==============================================================================
 
-\begin{frame}{Übersicht}
-\tableofcontents[sectionstyle=show/shaded, subsectionstyle=show/hide/hide]
+
+\begin{frame}{PCTCP Design}
+  \begin{figure}
+    \begin{center}
+      \includegraphics[width=0.7\textwidth]{pics/PCTCP_design.pdf}
+      \caption{Vergleich des Designs zwischen Standard-\textsc{Tor} und PCTCP.}
+    \end{center}
+  \end{figure} 
 \end{frame}
 
-\begin{frame}{\secname}{\subsecname}
--Einleitung in PCTCP. Wo wird es eingesetzt? Anlehnung an DTLS
+
+\begin{frame}{IPSec in PCTCP}
+  \begin{figure}[h]
+  \centering{
+    \includegraphics[width=0.7\textwidth]{pics/PCTCP_header.pdf}
+    \caption{Vergleich der Inter Onion Router Pakete zwischen Standard-\textsc{Tor} und PCTCP.Grau schattierte Teile sind verschlüsselt. Quelle:\cite{pctcp}}}
+  \end{figure} 
 \end{frame}
 
-%------------------------------------------------------------------------------
-\subsection{Kernel-mode per-circuit TCP}
 
-\begin{frame}{Konzept}{\secname/\subsecname}
-- Konzept der Verbindung innerhalb des netzwerks\\
-- Schön mit Illustration
+\begin{frame}{PCTCP - Ciruit construction}
 \end{frame}
 
-\begin{frame}{Notwendige Änderungen}{\secname/\subsecname}
-- Änderung am Verbinungsaufbau\\
+
+
+
+%==============================================================================
+%//////////////////////////////////////////////////////////////////////////////
+\section{Diskussion}
+%//////////////////////////////////////////////////////////////////////////////
+%==============================================================================
+
+\begin{frame}{Ease of deployment}
 \end{frame}
 
-\begin{frame}{Deployment}{\secname/\subsecname}
-- Vorteile des Deployments (Funktion des heterogenen Netzwerks (Plain tor + PCTCP)\\
+\begin{frame}{Socket Exhaustion Attacks}
 \end{frame}
 
-\begin{frame}{Probleme}{\secname/\subsecname}
-- Resultierende Probleme\\
-\end{frame}
-
-%------------------------------------------------------------------------------
-\subsection{IPSec in PCTCP}
-
-\begin{frame}{}{\secname/\subsecname}
-- Lösung der Probleme mit IPSec\\
-\end{frame}
-
-\begin{frame}{}{\secname/\subsecname}
-- Alternative Lösungen
-\end{frame}
-
-%===============================================================================
-%///////////////////////////////////////////////////////////////////////////////
-\section{Evaluation}
-%///////////////////////////////////////////////////////////////////////////////
-%===============================================================================
-
-\begin{frame}{Übersicht}
-\tableofcontents[sectionstyle=show/shaded, subsectionstyle=show/hide/hide]
-\end{frame}
-
-%------------------------------------------------------------------------------
-\begin{frame}{\secname}{\subsecname}
+\begin{frame}{Ausblick}
+Kurz sagen, dass PCTCP beinahe genauso wenig taugt wie TCPoverDTLS und warum.
+Vielleicht IMUX anreisen
 \end{frame}
 
 
 
 %===============================================================================
 %///////////////////////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
+%///////////////////////////////////////////////////////////////////////////////
 %===============================================================================
 
-\begin{frame}[plain]{Übersicht}
-	\tableofcontents[sectionstyle=show/show, subsectionstyle=show/hide/hide]
-\begin{center}
-Vielen Dank für die Aufmerksamkeit!
-\end{center}
+\begin{frame}[plain]{Reference}
+  \begin{center}
+  Vielen Dank für die Aufmerksamkeit!
+  \end{center}
+  \tiny
+  \bibliographystyle{plain}
+  \bibliography{bibliography}
 \end{frame}
 
-%===============================================================================
-%///////////////////////////////////////////////////////////////////////////////
-%///////////////////////////////////////////////////////////////////////////////
-%///////////////////////////////////////////////////////////////////////////////
-%///////////////////////////////////////////////////////////////////////////////
-%===============================================================================
-
-\nocite{rfc:socks}
-\nocite{rfc:ipsec}
-\nocite{rfc:tls}
-\nocite{pctcp}
+\nocite{tor}
 \nocite{tcp-over-dtls}
-{\tiny
-\bibliographystyle{plain}
-\bibliography{bibliography}
-}
+\nocite{pctcp}
+\nocite{imux}
+\nocite{tor_improvements}
 
 %===============================================================================
 %///////////////////////////////////////////////////////////////////////////////
@@ -230,4 +339,3 @@ Vielen Dank für die Aufmerksamkeit!
 %///////////////////////////////////////////////////////////////////////////////
 %///////////////////////////////////////////////////////////////////////////////
 %==============================================/=================================
-
