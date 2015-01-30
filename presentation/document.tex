@@ -21,6 +21,7 @@
 
 \PassOptionsToPackage{usenames}{color} 
 \usepackage{color} 
+\usepackage{ulem} 
 \usepackage[usenames]{color} 
 
 
@@ -91,10 +92,9 @@
 %//////////////////////////////////////////////////////////////////////////////
 %==============================================================================
 
-\begin{frame}{\textsc{Tor} - Architektur/Terminologie}
-  \begin{figure}
-    \includegraphics[width=0.9\textwidth]{pics/tor}
-  \end{figure}
+\begin{frame}{Tor - Architektur/Terminologie}
+   \includegraphics[width=0.9\textwidth]{pics/tor}
+    \rotatebox[origin=r]{270}{\tiny Quelle: vpngids.nl}
 \end{frame}
 
 
@@ -125,13 +125,14 @@
 \begin{frame}{Circuits}{\secname}
   \begin{figure}
     \includegraphics[width=.7\textwidth]{pics/tor}
+    \rotatebox[origin=r]{270}{\tiny Quelle: vpngids.nl}
   \end{figure}
   \begin{itemize}
+    \item Üblicherweise drei: Entry\-, Middle-, Exit Node
     \item Werden Hop-by-hop aufgebaut
     \begin{itemize}
       \item Mit jedem Knoten wird ein Schlüssel ausgehandelt
     \end{itemize}
-    \item Üblicherweise drei: Entry\-, Middle-, Exit Node
     \item Werden nach einem Zeitintervall oder Fehler gewechselt
     \item Werden auf Vorrat angelegt (Performance)
   \end{itemize}
@@ -146,7 +147,7 @@
 %   $$CircID | Relay | Relayheader| DATA$$
 % \end{frame}
 
-\begin{frame}{Circuit construction}{\secname}
+\begin{frame}[t]{Circuit construction}{\secname}
   \begin{center}
     \begin{tikzpicture}%[font=\tiny]
       \draw[draw,line width=1.2pt] (0,0) -- (0,1) node[above] {OP};
@@ -157,59 +158,77 @@
       \draw[latex-] (0,0.25) -- node[anchor=south, font=\tiny]{Created} (3,0.25);
     \end{tikzpicture}
   \end{center}
-
   \begin{block}{Circuit Erweiterung}
     \begin{itemize}
+      \item OP öffnet eine Verbindung zu  OR$_1$
+    \begin{itemize}
+      \item Wenn schon eine Verbindung besteht wird diese genutzt
+    \end{itemize}
       \item OP sendet \textcolor{brown}{Create Control} Cell an OR$_1$
       \item OR$_1$ bestätigt mit \textcolor{brown}{Created Control} Cell
-      \item Wenn schon eine Verbindung besteht wird diese genutzt
       \item Schlüsselaustausch: OP und OR$_1$ teilen Schlüssel K$_1$
-      \item Beide merken sich Circuit Identifier
+      %\item Beide merken sich Circuit Identifier
     \end{itemize}
   \end{block}
 \end{frame}
 
 
 
-\begin{frame}{Circuit construction}{\secname}
-  \only<1>
-  {
+
+\begin{frame}[t]{Circuit construction}{\secname}
   \begin{center}
     \begin{tikzpicture}%[font=\tiny]
       \draw[draw,line width=1.1pt] (0,0) -- (0,1) node[above] {OP};
       \draw[draw,line width=1.1pt] (3,0) -- (3,1) node[above] {OR$_1$};
       \draw[draw,line width=1.1pt] (6,0) -- (6,1) node[above] {OR$_2$};
       \draw[draw,line width=1.1pt] (9,0) -- (9,1) node[above] {OR$_3$};
-      \draw[dotted,-latex] (0,0.9) -- node[anchor=south, font=\tiny]{Relay {\color{blue}\{Extend\}$_{K_1}$}}   (3,0.9);
-      \draw[dotted,latex-] (0,0.1) -- node[anchor=south, font=\tiny]{Relay {\color{blue}\{Extended\}$_{K_1}$}} (3,0.1);
+      \draw[dotted,-latex] (0,0.9) -- node[anchor=south, font=\tiny]{Relay {\color{cyan}\{Extend\}$_{K_1}$}}   (3,0.9);
+      \draw[dotted,latex-] (0,0.1) -- node[anchor=south, font=\tiny]{Relay {\color{cyan}\{Extended\}$_{K_1}$}} (3,0.1);
       \draw[-latex] (3,0.8) -- node[anchor=south, font=\tiny]{Create} (6,0.8);
       \draw[latex-] (3,0.2) -- node[anchor=south, font=\tiny]{Created} (6,0.2);
     \end{tikzpicture}
   \end{center}
-  }
-  \only<2>
-  {
+  \begin{block}{Relay Erweiterung}
+    \begin{itemize}
+      \item OP sendet \textcolor{brown}{Extend Relay} Cell an OR$_1$
+      \item OR$_1$ öffnet eine Verbindung zu  OR$_2$
+    \begin{itemize}
+      \item Wenn schon eine Verbindung besteht wird diese genutzt
+    \end{itemize}
+      \item OR$_1$ erweitert den Circuit zu OR$_2$ (\textcolor{brown}{Create})
+      \item OR$_1$ leitet die Antwort in einer\\ \textcolor{brown}{Extended Relay} Cell an OP zurück  
+      \item OP und OR$_2$ teilen einen gemeinsamen Schlüssel K$_2$
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+
+\begin{frame}[t]{Circuit construction}{\secname}
   \begin{center}
     \begin{tikzpicture}%[font=\tiny]
+      %striche
       \draw[draw,line width=1.2pt] (0,0) -- (0,1) node[above] {OP};
       \draw[draw,line width=1.2pt] (3,0) -- (3,1) node[above] {OR$_1$};
       \draw[draw,line width=1.2pt] (6,0) -- (6,1) node[above] {OR$_2$};
       \draw[draw,line width=1.2pt] (9,0) -- (9,1) node[above] {OR$_3$};
-      \draw[dotted,-latex] (0,0.9) -- node[anchor=south, font=\tiny]{Relay {\color{red}\{\{Extend\}$_{K_2}$\}$_{K_1}$}}   (3,0.9);
-      \draw[dotted,latex-] (0,0.1) -- node[anchor=south, font=\tiny]{Relay {\color{red}\{\{Extended\}$_{K_2}$\}$_{K_1}$}} (3,0.1);
-      \draw[dotted,-latex] (3,0.8) -- node[anchor=south, font=\tiny]{Relay {\color{blue}\{Extend\}$_{K_2}$}}   (6,0.8);
-      \draw[dotted,latex-] (3,0.2) -- node[anchor=south, font=\tiny]{Relay {\color{blue}\{Extended\}$_{K_2}$}} (6,0.2);
+      \draw[dotted,-latex] (0,0.9) -- node[anchor=south, font=\tiny]{Relay {\color{cyan}\{\{Extend\}$_{K_2}$\}$_{K_1}$}}   (3,0.9);
+      \draw[dotted,latex-] (0,0.1) -- node[anchor=south, font=\tiny]{Relay {\color{cyan}\{\{Extended\}$_{K_2}$\}$_{K_1}$}} (3,0.1);
+      \draw[dotted,-latex] (3,0.8) -- node[anchor=south, font=\tiny]{Relay {\color{orange}\{Extend\}$_{K_2}$}}   (6,0.8);
+      \draw[dotted,latex-] (3,0.2) -- node[anchor=south, font=\tiny]{Relay {\color{orange}\{Extended\}$_{K_2}$}} (6,0.2);
       \draw[-latex] (6,0.7) -- node[anchor=south, font=\tiny]{Create}   (9,0.7);
       \draw[latex-] (6,0.3) -- node[anchor=south, font=\tiny]{Created} (9,0.3);
     \end{tikzpicture}
   \end{center}
-  }
   \begin{block}{Relay Erweiterung}
     \begin{itemize}
-      \item OP sendet \textcolor{brown}{Extend Relay} Cell an OR$_1$
-      \item OR$_1$ erweitert den Circuit zu OR$_2$ (\textcolor{brown}{Create})
-      \item OR$_1$ leitet die Antwort in einer\\ \textcolor{brown}{Extended Relay} Cell an OP zurück  
-      \item OP und OR$_2$ teilen einen gemeinsamen Schlüssel K$_2$
+      \item OP sendet \textcolor{brown}{Extend Relay} Cell an OR$_2$
+      \item OR$_2$ öffnet eine Verbindung zu  OR$_3$
+    \begin{itemize}
+      \item Wenn schon eine Verbindung besteht wird diese genutzt
+    \end{itemize}
+      \item OR$_2$ erweitert den Circuit zu OR$_3$ (\textcolor{brown}{Create})
+      \item OR$_2$ leitet die Antwort in einer\\ \textcolor{brown}{Extended Relay} Cell an OP zurück  
+      \item OP und OR$_3$ teilen einen gemeinsamen Schlüssel K$_3$
     \end{itemize}
   \end{block}
 \end{frame}
@@ -263,61 +282,49 @@
   \end{itemize}
   Lösung in PCTCP:
   \begin{itemize}
-    \item Jeder Circuit bekommt eine eigene TCP Verbindung\\(per-circuit TCP)
+    \item Jeder Circuit bekommt eine eigene TCP Verbindung \\ (Ausnahme  OP zu OR)
   \end{itemize}
 \end{frame}
 
 
-\begin{frame}{Recap - Ciruit Construction Vanilla Tor}{\secname}
+\begin{frame}[t]{Recap - Circuit Construction PCTCP}{\secname}
   \begin{center}
     \begin{tikzpicture}%[font=\tiny]
-      \draw[draw,line width=1.2pt] (0,0) -- (0,1) node[above] {OP};
-      \draw[draw,line width=1.2pt] (3,0) -- (3,1) node[above] {OR1};
-      \draw[draw,line width=1.2pt] (6,0) -- (6,1) node[above] {OR2};
-      \draw[draw,line width=1.2pt] (9,0) -- (9,1) node[above] {OR3};
-      \draw[-latex] (0,0.75) -- node[anchor=south, font=\tiny]{Create} (3,0.75);
-      \draw[latex-] (0,0.25) -- node[anchor=south, font=\tiny]{Created} (3,0.25);
+      \draw[draw,line width=1.1pt] (0,0) -- (0,1) node[above] {OP};
+      \draw[draw,line width=1.1pt] (3,0) -- (3,1) node[above] {OR$_1$};
+      \draw[draw,line width=1.1pt] (6,0) -- (6,1) node[above] {OR$_2$};
+      \draw[draw,line width=1.1pt] (9,0) -- (9,1) node[above] {OR$_3$};
+      \draw[dotted,-latex] (0,0.9) -- node[anchor=south, font=\tiny]{Relay {\color{cyan}\{Extend\}$_{K_1}$}}   (3,0.9);
+      \draw[dotted,latex-] (0,0.1) -- node[anchor=south, font=\tiny]{Relay {\color{cyan}\{Extended\}$_{K_1}$}} (3,0.1);
+      \draw[-latex] (3,0.8) -- node[anchor=south, font=\tiny]{Create} (6,0.8);
+      \draw[latex-] (3,0.2) -- node[anchor=south, font=\tiny]{Created} (6,0.2);
     \end{tikzpicture}
   \end{center}
-
-  \begin{block}{Circuit Erweiterung}
+  \begin{block}{Relay Erweiterung}
     \begin{itemize}
-      \item OP sendet \textcolor{brown}{Create Control} Cell an OR\,1
-      \item OR\,1 bestätigt mit \textcolor{brown}{Created Control} Cell
-      \item {\color{red}Wenn schon eine Verbindung besteht wird diese genutzt}
-      \item Schlüsselaustausch: OP und OR\,1 teilen Schlüssel
-      \item Beide merken sich Circuit Identifier
+      \item OP sendet \textcolor{brown}{Extend Relay} Cell an OR$_1$
+      \item {\color{red}OR$_1$ öffnet eine Verbindung zu  OR$_2$}
+    \begin{itemize}
+      \item {\color{red}\sout{Wenn schon eine Verbindung besteht wird diese genutzt}}
+    \end{itemize}
+      \item OR$_1$ erweitert den Circuit zu OR$_2$ (\textcolor{brown}{Create})
+      \item OR$_1$ leitet die Antwort in einer\\ \textcolor{brown}{Extended Relay} Cell an OP zurück  
+      \item OP und OR$_2$ teilen einen gemeinsamen Schlüssel K$_2$
     \end{itemize}
   \end{block}
 \end{frame}
 
-\begin{frame}{Recap - Ciruit Construction PCTCP}{\secname}
-  \begin{center}
-    \begin{tikzpicture}%[font=\tiny]
-      \draw[draw,line width=1.2pt] (0,0) -- (0,1) node[above] {OP};
-      \draw[draw,line width=1.2pt] (3,0) -- (3,1) node[above] {OR1};
-      \draw[draw,line width=1.2pt] (6,0) -- (6,1) node[above] {OR2};
-      \draw[draw,line width=1.2pt] (9,0) -- (9,1) node[above] {OR3};
-      \draw[-latex] (0,0.75) -- node[anchor=south, font=\tiny]{Create} (3,0.75);
-      \draw[latex-] (0,0.25) -- node[anchor=south, font=\tiny]{Created} (3,0.25);
-    \end{tikzpicture}
-  \end{center}
-  \begin{block}{Circuit Erweiterung}
-    \begin{itemize}
-      \item OP sendet \textcolor{brown}{Create Control} Cell an OR\,1
-      \item OR\,1 bestätigt mit \textcolor{brown}{Created Control} Cell
-      \item {\color{red}Es wird in jedem Fall eine neue Verbinudung geöffnet}
-      \item Schlüsselaustausch: OP und OR\,1 teilen Schlüssel
-      \item Beide merken sich Circuit Identifier
-    \end{itemize}
-  \end{block}
-\end{frame}
 
 
 \begin{frame}{IPSec in PCTCP}{\secname}
+  \begin{figure}[h]
+    \begin{center}
+      \includegraphics[ trim=0cm 3cm 0cm 0cm,clip=true,width=0.7\textwidth]{pics/PCTCP_header.pdf}
+      \rotatebox[origin=r]{270}{\tiny Quelle: \cite{pctcp}}
+    \end{center}
+  \end{figure}
   \begin{block}{Warum IPSec?}
     \begin{itemize}
-      \item PCTCP: eine TCP Vebindung pro Circuit
       \item TLS verschlüsselt lediglich die Nutzlast/\\ TCP-Header bleibt Klartext
       \begin{itemize}
         \item[$\rightarrow$] Ein Angreifer kann Verbindungen unterscheiden
@@ -330,13 +337,13 @@
 
 \begin{frame}{Exkurs - IPSec (Internet Protocol Security)}{\secname}
   \begin{itemize}
-    \item Arbeitet auf Vermittlungsschicht
     \item Stellt Schutzziele sicher
     \begin{itemize}
       \item Vertraulichkeit
       \item Authentizität
       \item Integrität
     \end{itemize}
+    \item Arbeitet auf Vermittlungsschicht
     \item Umfasst Protkolle für eine gesicherte Kommunikation
     \begin{itemize}
       \item Authentication Header (AH)
@@ -415,10 +422,12 @@
       \rotatebox[origin=r]{270}{\tiny Quelle: \cite{pctcp}}
     \end{center}
   \begin{itemize}
-    \item ``Kernel-mode per-circuit TCP'' löst das\\
-          Cross Circuit Interference Problem
-    \item Anstatt TLS sichert IPSec die Schutzziele und sorgt\\
-          zusätzlich für die Vertraulichkeit der Verbindungsdaten
+   \onslide<2>
+   {
+        \item Bis zu 60\% verringerte Latenzzeiten
+        \item Bis zu 30\% verbesserter Durchsatz
+    
+   }
   \end{itemize}
   \end{figure} 
 \end{frame}
@@ -439,20 +448,20 @@
       \item Alle verfügbaren Sockets belegen
       \item So viele Sockets öffen bis das System überlastet wird
     \end{itemize}
-    \item Bisher schwierig, wegen Multiplexing der Circuits\\über eine enizige TCP Verbindung
+    \item Bisher schwierig, wegen Multiplexing der Circuits\\über eine einzige TCP Verbindung
   \end{itemize}
 \end{frame}
 
-% \begin{frame}{Socket Exhaustion Attacks}
-%   \begin{block}{Angriff auf Exit Nodes}
-%     \begin{itemize}
-%       \item Jeder Stream öffnet einen Socket an der Exit Node
-%       \item Angreifer öffnet Streams über selbe Exit Node,\\ bis diese weitere Streams ablehnt
-%       \item Funktioniert auch ohne PCTCP
-%       \item Angriff erreicht nicht das komplette Netzwerk
-%     \end{itemize}
-%   \end{block}
-% \end{frame}
+ \begin{frame}{Socket Exhaustion Attacks}{\secname}
+   \begin{block}{Angriff auf Exit Nodes}
+     \begin{itemize}
+       \item Jeder Stream öffnet einen Socket an der Exit Node
+       \item Angreifer öffnet Streams über selbe Exit Node,\\ bis diese weitere Streams ablehnt
+       \item Funktioniert auch ohne PCTCP
+       \item Angriff erreicht nicht das komplette Netzwerk
+     \end{itemize}
+   \end{block}
+ \end{frame}
 
 \begin{frame}{Socket Exhaustion Attacks}{\secname}
   \begin{figure}[h]
@@ -478,8 +487,8 @@
       \item Basiert auf der Circuit Erweiterung
       \item Circuits werden über Zielknoten aufgebaut
       \item Zielknoten soll Middle Node sein
-      \item Angriefer bleibt anonym
-      \item Günstig, da nicht mehr ein Onion Proxy\\pro Circuit gebraucht wird
+      \item Angreifer bleibt anonym
+      \item Günstig, da nur ein Onion Proxy gebraucht wird
     \end{itemize}
   \end{block}
 \end{frame}
@@ -492,7 +501,7 @@
 
 \begin{frame}{Fazit}
   \begin{itemize}
-    \item Einsatz erfordert manuelle Interaktion (IPsec) 
+    \item Einsatz erfordert manuelle Interaktion (IPsec)
     \begin{itemize}
       \item[$\rightarrow$] Hemmschwelle für Teilnahme steigt
       \item[$\rightarrow$] Gesamtanonymität sinkt
@@ -516,7 +525,7 @@
 %///////////////////////////////////////////////////////////////////////////////
 %===============================================================================
 
-\begin{frame}[plain]{Reference}
+\begin{frame}[plain]{Referenzen}
   \begin{center}
   Vielen Dank für die Aufmerksamkeit!
   \end{center}
