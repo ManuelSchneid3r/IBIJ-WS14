@@ -42,7 +42,7 @@ Die Lösung für diese Problematik findet sich in Anonymisierungsdiensten. In
 diesem Artikel handelt es sich um Anonymisierungsnetzwerke, die als 
 Overlay-Network über dem traditionellen Transportprotokoll TCP/IP aufsetzen. 
 Eine Alternative sind Anonymisierungsdienste, die auf VPN basieren. Bei diesen 
-Diensten Verbindet sich der Nutzer per VPN zu einem vertrauenswürdigen 
+Diensten verbindet sich der Nutzer per VPN zu einem vertrauenswürdigen 
 Dienstleister und hält somit seine Verbindungsdaten vor den Hosts, zu denen er 
 sich danach verbindet, verborgen. Das Problem bei diesen Diensten ist, dass man 
 vor dem Dienstleister nicht anonym ist. Hingegen ist im Design eines 
@@ -85,7 +85,7 @@ PCTCP, bezüglich der Sicherheit kritisch betrachtet und diskutiert.
 
 \newpage
 %------------------------------------------------------------------------------
-\section{TOR}
+\section{Tor}
 \label{sec:tor}
 
 Tor ist eine Implementierung des Onion Routings und dient der 
@@ -119,7 +119,7 @@ erwähnt werden.
 Wenn ein Onion Proxy eine anonyme Verbindung in das Internet öffnen möchte, 
 benutzt er das Tor-Netzwerk als Proxy. Der Onion Proxy wählt eine Reihe 
 von Onion Routern aus, über die inkrementell ein Pfad, der sogenannte Circuit, 
-erstellt wird. Auf auf diesem Pfad kennen die Onion Routers lediglich ihren 
+erstellt wird. Auf diesem Pfad kennen die Onion Routers lediglich ihren 
 Vorgänger und Nachfolger. Der Datenverkehr wird vom Onion Proxy mehrfach 
 verschlüsselt und entlang diesem Pfad gesendet. Die einzelnen Onion Router 
 entschlüsseln, wie die Hüllen einer Zwiebel, nach und nach die Nutzlast der 
@@ -154,7 +154,7 @@ welcher auf dieser Verbindung eindeutig ist. Der Onion Router setzt den
 ausgehandelten Schlüssel mit dem Circuit Identifier in Verbindung, damit er in 
 Zukunft weiß, mit welchem Schlüssel er Pakete die auf diesem Circuit ankommen zu 
 entschlüsseln hat. Wenn ein Circuit um eine Onion Router erweitert wird, wird 
-der dabei entstandene Circuit Identifier wiederum auch mit dem obigen Tupel 
+der dabei entstandene Circuit Identifier auch mit dem obigen Tupel 
 verbunden. Somit weiß der Onion Router, mit welchem Circuit auf der anderen 
 Verbindung die eingehende Cell gekoppelt ist. Somit handelt es sich hier um 
 Source Routing und keiner der Knotenpunkte auf diesem Pfad kennt gleichzeitig 
@@ -168,7 +168,7 @@ nacheinander mit den Schlüsseln der Onion Router auf dem Circuit. Der Onion
 Proxy sendet das Paket anschließend an $\textit{OR}_1$. $\textit{OR}_1$ empfängt 
 das Paket und entschlüsselt die erste ``Zwiebelschicht'' mit dem Schlüssel der 
 zu diesem Circuit hinterlegt ist. Daraufhin vergleicht er den im Relay Header 
-hintelegten Hashwert mit dem aktuellen Hashwert der Daten. Wenn der Hashwert 
+hinterlegten Hashwert mit dem aktuellen Hashwert der Daten. Wenn der Hashwert 
 übereinstimmt, ist die Nutzlast komplett entschlüsselt und wird vom Onion Router 
 verarbeitet. Wenn der Hashwert nicht übereinstimmt, ist die Nutzlast noch 
 verschlüsselt und der Onion Router leitet das Paket an den Circuit weiter, der 
@@ -282,7 +282,7 @@ erweitert und der Onion Proxy und $\textit{OR}_2$ können nun mit $K_2$
 verschlüsselte Relay Cells austauschen. Auf diese Weise können beliebig viele 
 weitere Onion Router zu dem Circuit hinzugefügt werden.
 
-\subsection{Cross Circuit Interference Problem.}
+\subsection{Cross Circuit Interference Problem}
 \label{sec:crosscircuitinterference} 
 
 Unter den vielen Problemen die Tor bis heute noch hat, ist das Cross Circuit 
@@ -331,13 +331,13 @@ In Abbildung \ref{fig:buffer} wird ein Szenario dargestellt, in dem der Fluss
 der Daten zweier Circuits über eine TCP-Verbindung vereint wird. Ein Circuit 
 wird verwendet um eine Verbindung zu einer Webseite herzustellen und der andere 
 Circuit wird verwedet um große Datenmengen mit der Filesharing Anwendung 
-Bittorrent zu übertragen. Beide Circuits laufen Über OR1 und OR2. Bei der 
-aktuellen Tor-Architektur bedeutet das, dass die beiden Circuits die 
-TCP-Verbindung zwischen $\textit{OR}_1$ und $\textit{OR}_2$ und speziell die In- 
-und Outputbuffer im Kernelspace teilen. Unter Last kann das dazu führen, dass 
-Circuits, die relativ wenig Daten fördern, wie der Circuit zum Besuch der 
-Webseite in dem obigen Szenario, verhältnismäßig große Latenzen haben.
-
+Bittorrent zu übertragen. Beide Circuits laufen Über $\textit{OR}_1$ und 
+$\textit{OR}_2$ . Bei der aktuellen Tor-Architektur bedeutet das, dass die 
+beiden Circuits die TCP-Verbindung zwischen $\textit{OR}_1$ und $\textit{OR}_2$ 
+und speziell die In- und Output Buffer im Kernelspace teilen. Unter Last kann das 
+dazu führen, dass Circuits, die relativ wenig Daten fördern, wie der Circuit zum 
+Besuch der Webseite in dem obigen Szenario, verhältnismäßig große Latenzen 
+haben.
 
 Grund dafür ist das Head-on-line Blocking, welches entsteht, wenn Pakete 
 verloren gehen beziehungsweise bei Überlastung des Netzwerks verworfen werden. 
@@ -424,7 +424,7 @@ gegenseitig zu beeinflussen. Konzeptuell wurde das Multiplexing der Circuits von
 der Transportschicht auf die Vermittlungsschicht verschoben. Im Vergleich zum 
 TCP-over-DTLS wird im PCTCP keine Userspace TCP-Verbindung, sondern eine übliche 
 TCP-Verbindungen im Kernelspace, erstellt. Die Autoren sprechen hier von einer 
-Kernel-Mode per-circuit TCP-Verbindung. 
+Kernel-Mode Per-Circuit TCP-Verbindung. 
 
 Die Verbindung vom Onion Proxy zum ersten Onion Router wird wie gehabt erhalten. 
 Es bleibt somit eine einzige Verbindung bestehen, über die alle Circuits 
@@ -473,7 +473,7 @@ also ab der Transportschicht, wird als Nutzlast des IPsec gefördert.
 Im Tunnelmodus werden zwei Netzwerke durch einen IPsec-Tunnel verbunden. Dazu 
 verbinden sich die Gateways zweier Netzwerke miteinander und die Internetzwerk 
 Pakete werden über die IPsec Gateways geleitet. Die Pakete des Datenverkehrs 
-werden von den Gatewaysm, samt IP Header, gekapselt und mit einem neuen IP 
+werden von den Gateways, samt IP Header, gekapselt und mit einem neuen IP 
 Header versehen. Der zusätzliche IP Header ist für das Routing zum 
 gegenüberliegenden Gateway zuständig. Letzteres entpackt das empfangene Paket 
 und leitet es in das eigene Netzwerk weiter. In diesem Modus sind die Endpunkte 
@@ -524,7 +524,7 @@ eines Onion Routers die Verbindungen nicht mehr unterscheiden und somit keine
 Verbindungen mehr zählen oder den Datenverkehr einzelner Verbindungen 
 analysieren. Da das ESP Protokoll bereits für die Vertraulichkeit der 
 Verbindungen sorgt, ist die Verschlüsselung der Verbindungen zwischen den Onion 
-Routern durch SSL/TLS redundant und kann ausgelassen werden. Schliesslich 
+Routern durch SSL/TLS redundant und kann ausgelassen werden. Schließlich 
 vervollständigt sich das Bild des Designs, das die Autoren des PCTCP 
 vorschlagen: Entsprechend der Namensgebung des Per-Circuit TCP-over-IPsec, 
 werden Verbindungen über Tor, die Circuits, in jeweils eigenen TCP-Verbindungen, 
@@ -595,7 +595,7 @@ Einrichtung des IPsecs benötigt Administratorrechte und muss manuell erledigt
 werden. Daraus folgt, dass für die freiwilligen Betreiber der Onion Router der 
 Aufwand und die erforderliche technische Fachkompetenz für die Einrichtung 
 letzterer steigt. Durch die Steigerung der Hemmschwelle oder einfach durch 
-mangelndes technisches Know-How sinkt die Zahl der freiwilligen Teilnehmner des 
+mangelndes technisches Know-How sinkt die Zahl der freiwilligen Teilnehmer des 
 Tor Netzwerkes. Folglich wird dadurch auch die allgemein gebotene Anonymität 
 verringert. Um diesen Effekt zu schmälern, soll Tor mit Installationsskripten 
 ausgeliefert werden. Ein weiterer Ansatz ist IPsec für den Nutzer transparent 
@@ -613,13 +613,13 @@ verworfen.\cite{tor}}: die Socket Exhaustion Angriffe.
 Sockets sind auf allen gängigen Betriebssystemen eine endliche Ressource. Um 
 diese Grenze nicht zu erreichen, begrenzt Tor intern die Verwendung der TCP 
 Sockets. Dazu wird die Anzahl der aktiven Verbindungen verfolgt und wenn ein 
-festgesetztes Maximum erreicht ist, weigert sich Tor neue Verbindungen zu öffnen. 
-Auf Linuxsystemen liegt das Standardlimit des Betriebssystems bei 4096. Intern 
-setzt Tor das Maximum auf exakt den Wert, den das Betriebsystem meldet. Unter 
-Windows ist das Limit bei circa 16 Millionen angesiedelt. Mehr als ausreichend,
-Tor setzt das Maximum daher auf 15000 \cite{imux}.
+festgesetztes Maximum erreicht ist, weigert sich Tor neue Verbindungen zu 
+öffnen. Auf Linuxsystemen liegt das Standardlimit des Betriebssystems bei 4096. 
+Intern setzt Tor das Maximum auf exakt den Wert, den das Betriebsystem meldet. 
+Unter Windows ist das Limit bei circa 16 Millionen angesiedelt. Für Tor ist das 
+mehr als ausreichend, daher wird das Maximum auf 15000 gesetzt\cite{imux}.
 
-Klassich konnte ein Angreifer schon ohne PCTCP eine Exit Node stillegen, indem 
+Klassisch konnte ein Angreifer schon ohne PCTCP eine Exit Node stillegen, indem 
 er so viel wie möglich persistente Streams über eine bestimmte Exit Node 
 leitet. Dadurch konnte der Angreifer aber nur Exit Nodes attackieren. Mit dem 
 Sniper Angriff \cite{sniper} ist es möglich jeden beliebigen Onion Router im 
@@ -630,7 +630,7 @@ angegriffenen Onion Router effektiv einen Socket pro Onion Proxy Instanz, da in
 Standard Tor alle Circuits über eine TCP Verbindung gemultiplext werden. Somit 
 mussten für diesen Angriff ursprünglich so viele Onion Proxy Instanzen erstellt 
 werden wie auf dem Zielknoten Sockets verbraucht werden sollten. Dieses 
-Verahren ist schlecht skalierbar und für einen Angreifer wegen der Kosten eher 
+Verfahren ist schlecht skalierbar und für einen Angreifer wegen der Kosten eher 
 uninteressant.
 
 Mit PCTCP werden die Socket Exhaustion Angriffe wesentlich effektiver. Um einen 
@@ -653,7 +653,7 @@ hohen Anzahl an Verbindungen erreicht werden, dass die Performance des Knoten
 durch Prozessor- oder Speicherauslastung sinkt oder der Prozess gar vom Kernel 
 beendet wird. Wenn der Angreifer selbst Onion Router für Verkehrsanalysen 
 betreibt, steigen seine Chancen, dass die neuen Pfade über seine Onion Router 
-laufen: Ein weiter Grund, warum die Größe des Netzwerkes respektive die 
+laufen: Ein weiterer Grund, warum die Größe des Netzwerkes respektive die 
 Benutzerfreundlichkeit der Software in direkter Korrelation zur Anonymität 
 steht.
 %==============================================================================
@@ -676,7 +676,7 @@ globale IPv6 Datenaufkommen aktuell noch unter einem Prozent.
 Die Errungenschaften der Performancesteigerung durch PCTCP sind ausgezeichnet 
 und es wäre wünschenswert diese in der Praxis für Tor einsetzten zu können. 
 Allerdings sind die Sicherheitseinbußen sehr kritisch zu betrachten und für ein 
-Netzwerk, dessen primäres Ziel die Wahrung der Anonyität ist, steht der Gewinn 
+Netzwerk, dessen primäres Ziel die Wahrung der Anonymität ist, steht der Gewinn 
 der Performance vermutlich in keiner Relation zum Preis der Sicherheit. Die 
 Frage nach einem umsetzbaren Ansatz zur Verbesserung der Performance bleibt also 
 offen und birgt viel Möglichkeiten für weitere Forschungen.
