@@ -148,6 +148,10 @@ Headeraufbau kann in \cite{tor} nachgesehen werden.
 
 \subsection{Circuits}
 
+Konzeptuell sind Circuits die Pfade im Netzwerk, entlang welcher die Cells gesendet werden, bevor
+sie das Tor-Netzwerk verlassen. Aus technischer Sicht ist der Circuit eine auf den Onion Routern
+des Pfades hinterlegte Menge von Regeln, die den Fluss der Cells steuern.
+
 Beim inkrementellen Ausbauen des Circuits wird mit jedem Onion Router 
 $\textit{OR}_i$ ein gemeinsamer symmetrischer Schlüssel $\textit{K}_i$ 
 ausgehandelt. Zusätzlich bekommt die neue Verbindung einen Circuit Identifier, 
@@ -261,7 +265,7 @@ Wie im ersten Schritt bekommt $\textit{OR}_1$ eine Created Control Cell von
 $\textit{OR}_2$ zurück. $\textit{OR}_1$ verpackt die Antwort in eine Extended 
 Relay Cell und leitet sie weiter an den Onion Proxy.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \begin{center}
     \includegraphics[width=0.9\textwidth]{pics/construction.pdf}
     \caption{Darstellung des Aufbaus und der Verwendung eines Circuits. Quelle: \cite{tor}}
@@ -279,8 +283,6 @@ Schlüsselaustausches verschlüsselt wurde. Der Circuit ist nun um $\textit{OR}_
 erweitert und der Onion Proxy und $\textit{OR}_2$ können nun mit $K_2$ 
 verschlüsselte Relay Cells austauschen. Auf diese Weise können beliebig viele 
 weitere Onion Router zu dem Circuit hinzugefügt werden.
-
-\newpage
 
 \subsection{Cross Circuit Interference Problem}
 \label{sec:crosscircuitinterference} 
@@ -319,7 +321,7 @@ nicht tiefer in die Details des Transmission Control Protocols eingegangen. Mehr
 Informationen zum Handling des Congestion Windows und TCP generell kann in den 
 relevanten RFCs gefunden werden \cite{rfc:tcp, rfc:tcpcc}.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \begin{center}
     \includegraphics[width=0.8\textwidth]{pics/BufferPic.pdf}
     \caption{Beispielszenario, in dem das Cross Circuit Interference Problem auftreten kann. Quelle: \cite{pctcp} }
@@ -351,7 +353,7 @@ die Anwendung weitergegeben werden. Der TCP Spezifikation entsprechend ist das
 erforderlich, aber für die Circuits in Tor ist das problematisch und nicht 
 notwendig.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \begin{center}
     \includegraphics[width=0.7\textwidth]{pics/headonlinevanilla.pdf}
     \caption{Die unterschiedlich schattierten Rechtecke stellen Cells unterschiedlicher Circuits dar. Die letzten zwei Cells sind bereit zur Weitergabe an die Anwendung, werden aber zurückgehalten. Quelle: \cite{tcp-over-dtls}}
@@ -405,7 +407,7 @@ Goldberg, einen alternativen Ansatz zu verfolgen, der auf dem selben
 ``Ein-Circuit-pro-TCP-Verbindung'' Prinzip des  TCP-over-DTLS aufbaut: das 
 Per-Circuit TCP-over-IPsec. 
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \begin{center}
     \includegraphics[width=0.7\textwidth]{pics/headonlinedtls.pdf}
     \caption{Die unterschiedlich schattierten Rechtecke stellen Cells unterschiedlicher Circuits dar. Alle empfangenen Cells werden direkt an die Anwendung weitergegeben. Vergleiche Abbildung \ref{fig:headonline}. Quelle:\cite{tcp-over-dtls}}
@@ -482,7 +484,7 @@ Instanzen. Für die Sicherheit sind die Gateways zuständig, während die
 Kommunikationsendpunkte beliebige Teilnehmner aus den beiden Netzwerken sein 
 können.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \begin{center}
     \begin{subfigure}[t]{0.46\textwidth}
       \includegraphics[width=\textwidth]{pics/PCTCP_design.pdf}
