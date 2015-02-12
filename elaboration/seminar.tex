@@ -84,6 +84,7 @@ relevant sind. In Abschnitt \ref{sec:discussion} werden die Veränderungen im
 PCTCP, bezüglich der Sicherheit kritisch betrachtet und diskutiert.
 
 \newpage
+
 %------------------------------------------------------------------------------
 \section{Tor}
 \label{sec:tor}
@@ -147,7 +148,7 @@ Headeraufbau kann in \cite{tor} nachgesehen werden.
 
 \subsection{Circuits}
 
-\newpage Beim inkrementellen Ausbauen des Circuits wird mit jedem Onion Router 
+Beim inkrementellen Ausbauen des Circuits wird mit jedem Onion Router 
 $\textit{OR}_i$ ein gemeinsamer symmetrischer Schlüssel $\textit{K}_i$ 
 ausgehandelt. Zusätzlich bekommt die neue Verbindung einen Circuit Identifier, 
 welcher auf dieser Verbindung eindeutig ist. Der Onion Router setzt den 
@@ -260,16 +261,13 @@ Wie im ersten Schritt bekommt $\textit{OR}_1$ eine Created Control Cell von
 $\textit{OR}_2$ zurück. $\textit{OR}_1$ verpackt die Antwort in eine Extended 
 Relay Cell und leitet sie weiter an den Onion Proxy.
 
-\begin{figure}[t]
+\begin{figure}[h]
   \begin{center}
     \includegraphics[width=0.9\textwidth]{pics/construction.pdf}
     \caption{Darstellung des Aufbaus und der Verwendung eines Circuits. Quelle: \cite{tor}}
     \label{fig:construction} 
   \end{center} 
 \end{figure}
-
-\newpage
-
 
 Wie in Abbildung \ref{fig:construction} nachvollzogen werden kann, hat sich der 
 Extend Vorgang nicht geändert. Der Vorgang wurde lediglich vom Onion Proxy durch 
@@ -281,6 +279,8 @@ Schlüsselaustausches verschlüsselt wurde. Der Circuit ist nun um $\textit{OR}_
 erweitert und der Onion Proxy und $\textit{OR}_2$ können nun mit $K_2$ 
 verschlüsselte Relay Cells austauschen. Auf diese Weise können beliebig viele 
 weitere Onion Router zu dem Circuit hinzugefügt werden.
+
+\newpage
 
 \subsection{Cross Circuit Interference Problem}
 \label{sec:crosscircuitinterference} 
